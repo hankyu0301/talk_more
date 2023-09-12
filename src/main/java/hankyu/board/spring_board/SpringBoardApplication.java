@@ -1,4 +1,4 @@
-package java.hankyu.board.spring_board;
+package hankyu.board.spring_board;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
