@@ -1,4 +1,4 @@
-package java.hankyu.board.spring_board;
+package hankyu.board.spring_board;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

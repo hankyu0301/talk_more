@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.member;
 
-import hankyu.board.spring_board.dto.member.EmailConfirmRequest;
+import hankyu.board.spring_board.dto.email.EmailConfirmRequest;
 
 public class EmailAuthRequestFactory {
 

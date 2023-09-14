@@ -1,10 +1,10 @@
 package hankyu.board.spring_board.service.email;
 
-import hankyu.board.spring_board.dto.member.EmailConfirmRequest;
-import hankyu.board.spring_board.dto.member.ResendEmailRequest;
+import hankyu.board.spring_board.dto.email.EmailConfirmRequest;
+import hankyu.board.spring_board.dto.email.ResendEmailRequest;
 import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.exception.member.EmailAlreadyVerifiedException;
-import hankyu.board.spring_board.exception.member.InvalidVerificationCodeException;
+import hankyu.board.spring_board.exception.email.EmailAlreadyVerifiedException;
+import hankyu.board.spring_board.exception.email.InvalidVerificationCodeException;
 import hankyu.board.spring_board.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.repository.member.MemberRepository;
 import hankyu.board.spring_board.service.redis.RedisKey;

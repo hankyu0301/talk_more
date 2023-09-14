@@ -1,8 +1,8 @@
-package hankyu.board.spring_board.controller.member;
+package hankyu.board.spring_board.controller.email;
 
 
-import hankyu.board.spring_board.dto.member.EmailConfirmRequest;
-import hankyu.board.spring_board.dto.member.ResendEmailRequest;
+import hankyu.board.spring_board.dto.email.EmailConfirmRequest;
+import hankyu.board.spring_board.dto.email.ResendEmailRequest;
 import hankyu.board.spring_board.dto.response.Response;
 import hankyu.board.spring_board.service.email.EmailService;
 import io.swagger.annotations.Api;

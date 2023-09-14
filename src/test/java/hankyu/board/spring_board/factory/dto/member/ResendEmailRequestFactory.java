@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.member;
 
-import hankyu.board.spring_board.dto.member.ResendEmailRequest;
+import hankyu.board.spring_board.dto.email.ResendEmailRequest;
 
 public class ResendEmailRequestFactory {
     public static ResendEmailRequest createResendEmailRequest(){
