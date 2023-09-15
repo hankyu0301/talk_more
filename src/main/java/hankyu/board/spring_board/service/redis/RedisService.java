@@ -25,7 +25,7 @@ public class RedisService {
         redisTemplate.opsForValue().set(redisKey.getKey() + key, value, expireDuration);
     }
 
-    public void deleteData(RedisKey redisKey,String key) {
+    public void deleteData(RedisKey redisKey, String key) {
         redisTemplate.delete(redisKey.getKey() + key);
     }
 

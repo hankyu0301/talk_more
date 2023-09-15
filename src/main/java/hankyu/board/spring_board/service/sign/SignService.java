@@ -73,7 +73,7 @@ public class SignService {
         validateTokenReissueRequest(req.getRefreshToken());
         Authentication authentication = tokenProvider.getAuthentication(req.getAccessToken());
         String refreshToken = redisService.getData(RedisKey.REFRESH_TOKEN, req.getRefreshToken());
-        validateRefreshToken(refreshToken, req.getRefreshToken());
+        validateRefreshTokenForReissue(refreshToken, req.getRefreshToken());
         return tokenProvider.generateAccessToken(authentication);
     }
 
@@ -82,6 +82,7 @@ public class SignService {
     * */
     @Transactional
     public void logout(LogoutRequest req) {
+        validateRefreshToken(req.getRefreshToken());
         //  refreshToken 삭제하여 accessToken을 재발급하지 못하게 함.
         redisService.deleteData(RedisKey.REFRESH_TOKEN, req.getRefreshToken());
 
@@ -89,6 +90,12 @@ public class SignService {
         //  req.getAccessToken()으로 남은 유효시간을 읽어와서 유효시간동안 redis에 등록.
         //  redis에 등록된 accessToken으로 로그인이 불가(jwtAuthenticationFilter에서 확인)
         expireAccessToken(req.getAccessToken());
+    }
+
+    private void validateRefreshToken(String refreshToken) {
+        if (!tokenProvider.validateToken(refreshToken)) {
+            throw new InvalidRefreshTokenException();
+        }
     }
 
     private void validateSignUpRequest(SignUpRequest request) {
@@ -120,7 +127,7 @@ public class SignService {
         }
     }
 
-    private void validateRefreshToken(String refreshTokenFromDB, String refreshTokenFromRequest) {
+    private void validateRefreshTokenForReissue(String refreshTokenFromDB, String refreshTokenFromRequest) {
         if (!StringUtils.hasText(refreshTokenFromDB) && !refreshTokenFromDB.equals(refreshTokenFromRequest))
             throw new InvalidRefreshTokenException(); //  만료되었거나, 로그아웃된, 일치하지 않는 refreshToken
     }
