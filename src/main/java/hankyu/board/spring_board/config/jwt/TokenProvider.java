@@ -53,7 +53,6 @@ public class TokenProvider {
     }
 
     private String generateRefreshToken() {
-
         return  Jwts.builder()
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -104,14 +103,10 @@ public class TokenProvider {
     }
 
     private Claims parseClaims(String accessToken) {
-        try {
             return Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(accessToken)
                     .getBody();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims();
-        }
     }
 }
