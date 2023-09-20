@@ -1,6 +1,7 @@
 package hankyu.board.spring_board.config.jwt;
 
 import hankyu.board.spring_board.dto.token.TokenResponse;
+import hankyu.board.spring_board.exception.sign.*;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
@@ -46,7 +47,7 @@ public class TokenProvider {
         // Access Token 생성
         return  Jwts.builder()
                 .setSubject(authentication.getName())       // MEMBER의 ID
-                .claim(AUTHORITIES_KEY, authorities)        // MEMBERROLE_NORMAL
+                .claim(AUTHORITIES_KEY, authorities)        // ROLE_NORMAL
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))     // 유효기간
                 .signWith(key, SignatureAlgorithm.HS512)    // 암호화 알고리즘
                 .compact();
@@ -65,7 +66,7 @@ public class TokenProvider {
         Claims claims = parseClaims(accessToken);
 
         if (claims.get(AUTHORITIES_KEY) == null) {
-            throw new RuntimeException("권한 정보가 없는 토큰입니다.");
+            throw new UnauthorizedTokenException();
         }
 
         // 클레임에서 권한 정보 가져오기
@@ -91,15 +92,14 @@ public class TokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
+            throw new TokenInvalidSecretKeyException();
         } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
+            throw new ExpiredTokenException();
         } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
+            throw new UnsupportedTokenException();
         } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
+           throw new TokenInvalidFormException();
         }
-        return false;
     }
 
     private Claims parseClaims(String accessToken) {
