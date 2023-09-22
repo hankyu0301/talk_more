@@ -47,6 +47,12 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/categories").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/categories/{id}").hasRole("ADMIN")
 
+                .antMatchers(HttpMethod.GET, "/api/posts").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/posts/{id}").authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/posts/{id}").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").authenticated()
+
                 .anyRequest().hasAnyRole("ADMIN");
 
 
