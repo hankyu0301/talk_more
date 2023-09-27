@@ -39,10 +39,10 @@ public class CategoryServiceTest {
         // given
         List<Category> categories = new ArrayList<>();
         categories.add(createCategory());
-        given(categoryRepository.findAllOrderByParentIdAscNullsFirstCategoryIdAsc()).willReturn(categories);
+        given(categoryRepository.findAll()).willReturn(categories);
 
         // when
-        List<CategoryDto> result = categoryService.findAllCategory();
+        List<CategoryDto> result = categoryService.findAllCategories();
 
         // then
         assertThat(result.size()).isEqualTo(1);

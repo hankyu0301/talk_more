@@ -20,7 +20,4 @@ public class CategoryCreateRequest {
     @Size(min = 2, max = 15, message = "길이 제한은 2~15자 이내입니다.")
     private String name;
 
-    @ApiModelProperty(value = "부모 카테고리 id", notes = "부모 카테고리의 id를 입력하세요.")
-    private Long parentId;
-
 }

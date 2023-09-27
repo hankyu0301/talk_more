@@ -45,8 +45,8 @@ public class PostController {
     @ApiOperation(value = "게시글 수정", notes = "게시글을 수정한다.")
     @PutMapping("/api/posts/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid @ModelAttribute PostUpdateRequest req) {
-        return Response.success(postService.update(id, req));
+    public Response update(@ApiParam(value = "게시글 id", required = true) @PathVariable Long id, @Valid @ModelAttribute PostUpdateRequest postUpdateRequest) {
+        return Response.success(postService.update(id, postUpdateRequest));
     }
 
     @ApiOperation(value = "게시글 삭제", notes = "게시글을 삭제한다.")

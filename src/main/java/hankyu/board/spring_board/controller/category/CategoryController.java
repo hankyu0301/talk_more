@@ -23,7 +23,7 @@ public class CategoryController {
     @GetMapping("/categories")
     @ResponseStatus(HttpStatus.OK)
     public Response findAllCategories() {
-        return Response.success(categoryService.findAllCategory());
+        return Response.success(categoryService.findAllCategories());
     }
 
     @ApiOperation(value = "카테고리 생성", notes = "카테고리를 생성합니다.")

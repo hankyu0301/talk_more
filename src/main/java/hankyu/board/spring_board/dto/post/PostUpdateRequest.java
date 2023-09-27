@@ -28,5 +28,5 @@ public class PostUpdateRequest {
     private List<MultipartFile> addedImages = new ArrayList<>();
 
     @ApiModelProperty(value = "제거된 이미지 아이디", notes = "제거될 이미지 아이디를 입력해주세요.")
-    private List<Long> deletedImages = new ArrayList<>();
+    private List<Long> deletedImageIds = new ArrayList<>();
 }

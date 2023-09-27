@@ -11,7 +11,6 @@ import hankyu.board.spring_board.exception.post.PostNotFoundException;
 import hankyu.board.spring_board.repository.category.CategoryRepository;
 import hankyu.board.spring_board.repository.member.MemberRepository;
 import hankyu.board.spring_board.repository.post.PostRepository;
-import hankyu.board.spring_board.service.file.FileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+
+import static hankyu.board.spring_board.helper.AuthHelper.extractMemberId;
 
 @Service
 @RequiredArgsConstructor
@@ -28,18 +28,22 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
-    private final FileService fileService;
+    private final ImageService imageService;
+
+    @Transactional(readOnly = true)
+    public PostListDto readAll(PostReadCondition cond) {
+        return PostListDto.toDto(
+                postRepository.findAllByCondition(cond)
+        );
+    }
 
     @Transactional
     public PostCreateResponse create(PostCreateRequest req) {
-
-        Member member = memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Long memberId = extractMemberId();
+        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
         Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
-        List<Image> imageList = req.getImages().stream()
-                .map(i -> new Image(i.getOriginalFilename()))
-                .collect(Collectors.toList());
+        List<Image> imageList = req.getImages().stream().map(imageService::create).collect(Collectors.toList());
         Post post = postRepository.save(new Post(req.getTitle(), req.getContent(), member, category, imageList));
-        uploadImages(req.getImages(), post.getImages());
         return new PostCreateResponse(post.getId());
     }
 
@@ -57,30 +61,33 @@ public class PostService {
     }
 
     @Transactional
-    public PostUpdateResponse update(Long id, PostUpdateRequest req) {
+    public PostUpdateResponse update(Long id, PostUpdateRequest postUpdateRequest) {
         Post post = postRepository.findByIdWithMember(id).orElseThrow(PostNotFoundException::new);
-
-        // 이미지 엔티티의 연관관계를 정리함. 미리 작성해둔 설정으로 인해 연관 관계가 끊어지면 삭제.
-        Post.ImageUpdatedResult result = post.update(req);
-
-        // 이미지 파일을 fileService로 관리
-        uploadImages(result.getAddedImageFiles(), result.getAddedImages());
-        deleteImages(result.getDeletedImages());
-
+        ImageUpdateResult imageUpdateResult = updateImages(postUpdateRequest.getAddedImages(), postUpdateRequest.getDeletedImageIds());
+        post.update(postUpdateRequest, imageUpdateResult);
         return new PostUpdateResponse(id);
     }
 
-    private void uploadImages(List<MultipartFile> fileImages, List<Image> images) {
-        IntStream.range(0, images.size()).forEach(i -> fileService.upload(fileImages.get(i), images.get(i).getUniqueName()));
+    /*  전달받은 이미지 수정요청을 처리하고 저장한 이미지, 삭제한 이미지 반 */
+    private ImageUpdateResult updateImages(List<MultipartFile> addedImages, List<Long> deletedImageIds) {
+        List<Image> uploadResult =  uploadImages(addedImages);
+        List<Image> deletedImages = convertImageIdsToImages(deletedImageIds);
+        deleteImages(deletedImages);
+        return new ImageUpdateResult(uploadResult, deletedImages);
     }
 
+    /*  삭제할 이미지의 id를 imageService.read(id)에서 Image로 변환*/
+    private List<Image> convertImageIdsToImages(List<Long> deletedImageIds) {
+        return deletedImageIds.stream().map(imageService::read).collect(Collectors.toList());
+    }
+
+    /*  업로드 할 사진파일을 imageService.create(MultipartFile file)에서 이미지 엔티티 저장, 파일을 저장*/
+    private List<Image> uploadImages(List<MultipartFile> fileImages) {
+        return fileImages.stream().map(imageService::create).collect(Collectors.toList());
+    }
+
+    /*  삭제할 image를 imageService.delete(Image image)에서 이미지 엔티티 삭제, 파일 삭제*/
     private void deleteImages(List<Image> images) {
-        images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
-    }
-
-    public PostListDto readAll(PostReadCondition cond) {
-        return PostListDto.toDto(
-                postRepository.findAllByCondition(cond)
-        );
+        images.forEach(imageService::delete);
     }
 }

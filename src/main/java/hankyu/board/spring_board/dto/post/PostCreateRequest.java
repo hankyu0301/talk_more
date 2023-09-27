@@ -9,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,10 +25,6 @@ public class PostCreateRequest {
     @ApiModelProperty(value = "게시글 본문", notes = "게시글 본문을 입력해주세요", required = true, example = "my content")
     @NotBlank(message = "게시글 본 입력해주세요.")
     private String content;
-
-    @ApiModelProperty(hidden = true)
-    @Null
-    private Long memberId;
 
     @ApiModelProperty(value = "카테고리 아이디", notes = "카테고리 아이디를 입력해주세요", required = true, example = "3")
     @NotNull(message = "카테고리 아이디를 입력해주세요.")

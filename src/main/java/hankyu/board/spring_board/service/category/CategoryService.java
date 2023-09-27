@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +18,14 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public List<CategoryDto> findAllCategory() {
-        List<Category> categories = categoryRepository.findAllOrderByParentIdAscNullsFirstCategoryIdAsc();
+    public List<CategoryDto> findAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
         return CategoryDto.toDtoList(categories);
     }
 
     @Transactional
     public void createCategory(CategoryCreateRequest req) {
-        Category parent = Optional.ofNullable(req.getParentId())
-                .map(id -> categoryRepository.findById(id).orElseThrow(CategoryNotFoundException::new))
-                .orElse(null);
-        categoryRepository.save(new Category(req.getName(), parent));
+        categoryRepository.save(new Category(req.getName()));
     }
 
     @Transactional

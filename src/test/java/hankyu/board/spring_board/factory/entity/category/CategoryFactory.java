@@ -5,7 +5,7 @@ import hankyu.board.spring_board.entity.category.Category;
 public class CategoryFactory {
 
     public static Category createCategory() {
-        return new Category("name", null);
+        return new Category("name");
     }
 
 }

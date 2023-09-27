@@ -44,7 +44,7 @@ class CategoryControllerTest {
         mockMvc.perform(get("/api/categories"))
                 .andExpect(status().isOk());
 
-        verify(categoryService).findAllCategory();
+        verify(categoryService).findAllCategories();
     }
 
     @Test

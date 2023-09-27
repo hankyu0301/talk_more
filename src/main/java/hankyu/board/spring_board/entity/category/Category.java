@@ -3,8 +3,6 @@ package hankyu.board.spring_board.entity.category;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 
@@ -20,14 +18,7 @@ public class Category {
 
     @Column(length = 30, nullable = false)
     private String name;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Category parent;
-
-    public Category(String name, Category parent) {
+    public Category(String name) {
         this.name = name;
-        this.parent = parent;
     }
 }

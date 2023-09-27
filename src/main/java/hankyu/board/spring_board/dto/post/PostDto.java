@@ -33,7 +33,7 @@ public class PostDto {
                 post.getTitle(),
                 post.getContent(),
                 MemberDto.toDto(post.getMember()),
-                post.getImages().stream().map(i -> ImageDto.toDto(i)).collect(Collectors.toList()),
+                post.getImages().stream().map(ImageDto::toDto).collect(Collectors.toList()),
                 post.getCreatedAt(),
                 post.getModifiedAt()
         );

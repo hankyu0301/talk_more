@@ -108,7 +108,7 @@ class PostControllerTest {
                         multipart("/api/posts/{id}", 1L)
                                 .file("addedImages", addedImages.get(0).getBytes())
                                 .file("addedImages", addedImages.get(1).getBytes())
-                                .param("deletedImages", String.valueOf(deletedImages.get(0)), String.valueOf(deletedImages.get(1)))
+                                .param("deletedImageIds", String.valueOf(deletedImages.get(0)), String.valueOf(deletedImages.get(1)))
                                 .param("title", req.getTitle())
                                 .param("content", req.getContent())
                                 .with(requestPostProcessor -> {
@@ -124,7 +124,7 @@ class PostControllerTest {
         List<MultipartFile> capturedAddedImages = capturedRequest.getAddedImages();
         assertThat(capturedAddedImages.size()).isEqualTo(2);
 
-        List<Long> capturedDeletedImages = capturedRequest.getDeletedImages();
+        List<Long> capturedDeletedImages = capturedRequest.getDeletedImageIds();
         assertThat(capturedDeletedImages.size()).isEqualTo(2);
         assertThat(capturedDeletedImages).contains(deletedImages.get(0), deletedImages.get(1));
     }

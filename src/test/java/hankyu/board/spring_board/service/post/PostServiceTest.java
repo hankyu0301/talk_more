@@ -13,7 +13,6 @@ import hankyu.board.spring_board.exception.post.UnsupportedImageFormatException;
 import hankyu.board.spring_board.repository.category.CategoryRepository;
 import hankyu.board.spring_board.repository.member.MemberRepository;
 import hankyu.board.spring_board.repository.post.PostRepository;
-import hankyu.board.spring_board.service.file.FileService;
 import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +40,8 @@ import static hankyu.board.spring_board.factory.entity.post.PostFactory.createPo
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -59,7 +59,7 @@ class PostServiceTest {
     @Mock
     CategoryRepository categoryRepository;
     @Mock
-    FileService fileService;
+    ImageService imageService;
 
     @Test
     void create_Success() {
@@ -76,7 +76,7 @@ class PostServiceTest {
 
         //then
         verify(postRepository).save(any());
-        verify(fileService, times(req.getImages().size())).upload(any(), anyString());
+        verify(imageService, times(req.getImages().size())).create(any());
     }
 
     @Test
@@ -138,24 +138,26 @@ class PostServiceTest {
     @Test
     void update_Success() {
         // given
-        Image a = createImageWithIdAndOriginName(1L, "a.png");
-        Image b = createImageWithIdAndOriginName(2L, "b.png");
+        Image a = createImageWithIdAndOriginName(0L, "a.png");
+        Image b = createImageWithIdAndOriginName(1L, "b.png");
         Post post = createPostWithImages(List.of(a, b));
         given(postRepository.findByIdWithMember(anyLong())).willReturn(Optional.of(post));
+        given(imageService.create(any())).willReturn(createImageWithIdAndOriginName(2L,"c.png"));
+        given(imageService.read(anyLong())).willReturn(a);
         MockMultipartFile cFile = new MockMultipartFile("c", "c.png", MediaType.IMAGE_PNG_VALUE, "c".getBytes());
-        PostUpdateRequest postUpdateRequest = createPostUpdateRequest("title", "content",  List.of(cFile), List.of(a.getId()));
+        PostUpdateRequest postUpdateRequest = createPostUpdateRequest("title", "content",List.of(cFile),List.of(a.getId()));
 
         // when
         postService.update(1L, postUpdateRequest);
 
         // then
         List<Image> images = post.getImages();
-        List<String> originNames = images.stream().map(i -> i.getOriginName()).collect(toList());
+        List<String> originNames = images.stream().map(Image::getOriginName).collect(toList());
         assertThat(originNames.size()).isEqualTo(2);
         AssertionsForInterfaceTypes.assertThat(originNames).contains(b.getOriginName(), cFile.getOriginalFilename());
 
-        verify(fileService, times(1)).upload(any(), anyString());
-        verify(fileService, times(1)).delete(anyString());
+        verify(imageService, times(1)).create(any());
+        verify(imageService, times(1)).delete(any());
     }
 
     @Test
@@ -179,7 +181,7 @@ class PostServiceTest {
         postService.delete(1L);
 
         // then
-        verify(fileService, times(post.getImages().size())).delete(anyString());
+        verify(imageService, times(post.getImages().size())).delete(any());
         verify(postRepository).delete(any());
     }
 
