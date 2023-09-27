@@ -19,10 +19,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.Optional;
 
-import static hankyu.board.spring_board.factory.email.EmailAuthRequestFactory.createEmailAuthRequest;
-import static hankyu.board.spring_board.factory.email.EmailAuthRequestFactory.createEmailAuthRequestWithInvalidCode;
-import static hankyu.board.spring_board.factory.email.ResendEmailRequestFactory.createResendEmailRequest;
-import static hankyu.board.spring_board.factory.email.ResendEmailRequestFactory.createResendEmailRequestWithEmail;
+import static hankyu.board.spring_board.factory.dto.email.EmailAuthRequestFactory.createEmailAuthRequest;
+import static hankyu.board.spring_board.factory.dto.email.EmailAuthRequestFactory.createEmailAuthRequestWithInvalidCode;
+import static hankyu.board.spring_board.factory.dto.email.ResendEmailRequestFactory.createResendEmailRequest;
+import static hankyu.board.spring_board.factory.dto.email.ResendEmailRequestFactory.createResendEmailRequestWithEmail;
 import static hankyu.board.spring_board.factory.entity.member.MemberFactory.createMember;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;

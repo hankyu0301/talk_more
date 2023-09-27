@@ -1,4 +1,4 @@
-package hankyu.board.spring_board.factory.email;
+package hankyu.board.spring_board.factory.dto.email;
 
 import hankyu.board.spring_board.dto.email.EmailConfirmRequest;
 
