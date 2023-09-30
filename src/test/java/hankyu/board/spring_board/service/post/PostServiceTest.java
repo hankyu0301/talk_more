@@ -1,5 +1,6 @@
 package hankyu.board.spring_board.service.post;
 
+import hankyu.board.spring_board.aop.AuthChecker;
 import hankyu.board.spring_board.dto.post.PostCreateRequest;
 import hankyu.board.spring_board.dto.post.PostDto;
 import hankyu.board.spring_board.dto.post.PostListDto;
@@ -61,10 +62,15 @@ class PostServiceTest {
     @Mock
     ImageService imageService;
 
+    @Mock
+    AuthChecker authChecker;
+
     @Test
     void create_Success() {
         //given
         PostCreateRequest req = createPostCreateRequest();
+        given(authChecker.getMemberId()).willReturn(1L);
+        given(imageService.create(any())).willReturn(createImage());
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(categoryRepository.findById(anyLong())).willReturn(Optional.of(createCategory()));
         given(postRepository.save(any())).willReturn(createPostWithImages(
@@ -82,6 +88,7 @@ class PostServiceTest {
     @Test
     void create_memberNotFound_ThrowsException() {
         //given
+        given(authChecker.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when,then
@@ -91,6 +98,7 @@ class PostServiceTest {
     @Test
     void create_categoryNotFound_ThrowsException() {
         //given
+        given(authChecker.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(categoryRepository.findById(anyLong())).willReturn(Optional.empty());
 
@@ -104,6 +112,8 @@ class PostServiceTest {
         PostCreateRequest req = createPostCreateRequestWithImages(
                 List.of(new MockMultipartFile("test","test.txt", MediaType.TEXT_PLAIN_VALUE,"test".getBytes()))
         );
+        given(authChecker.getMemberId()).willReturn(1L);
+        given(imageService.create(any())).willThrow(UnsupportedImageFormatException.class);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(categoryRepository.findById(anyLong())).willReturn(Optional.of(createCategory()));
 
@@ -175,7 +185,7 @@ class PostServiceTest {
     void delete_Success() {
         // given
         Post post = createPostWithImages(List.of(createImage(), createImage()));
-        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
+        given(postRepository.findByIdWithMember(anyLong())).willReturn(Optional.of(post));
 
         // when
         postService.delete(1L);
@@ -188,7 +198,7 @@ class PostServiceTest {
     @Test
     void delete_postNotFound_ThrowsException() {
         // given
-        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(postRepository.findByIdWithMember(anyLong())).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> postService.delete(1L)).isInstanceOf(PostNotFoundException.class);
