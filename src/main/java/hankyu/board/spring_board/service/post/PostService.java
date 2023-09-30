@@ -1,5 +1,6 @@
 package hankyu.board.spring_board.service.post;
 
+import hankyu.board.spring_board.aop.AuthChecker;
 import hankyu.board.spring_board.dto.post.*;
 import hankyu.board.spring_board.entity.category.Category;
 import hankyu.board.spring_board.entity.member.Member;
@@ -19,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static hankyu.board.spring_board.helper.AuthHelper.extractMemberId;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +29,7 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
     private final ImageService imageService;
+    private final AuthChecker authChecker;
 
     @Transactional(readOnly = true)
     public PostListDto readAll(PostReadCondition cond) {
@@ -39,8 +40,7 @@ public class PostService {
 
     @Transactional
     public PostCreateResponse create(PostCreateRequest req) {
-        Long memberId = extractMemberId();
-        Member member = memberRepository.findById(memberId).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(authChecker.getMemberId()).orElseThrow(MemberNotFoundException::new);
         Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
         List<Image> imageList = req.getImages().stream().map(imageService::create).collect(Collectors.toList());
         Post post = postRepository.save(new Post(req.getTitle(), req.getContent(), member, category, imageList));
@@ -55,7 +55,8 @@ public class PostService {
 
     @Transactional
     public void delete(Long id) {
-        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        Post post = postRepository.findByIdWithMember(id).orElseThrow(PostNotFoundException::new);
+        authChecker.authorityCheck(post.getMember());
         deleteImages(post.getImages());
         postRepository.delete(post);
     }
@@ -63,12 +64,13 @@ public class PostService {
     @Transactional
     public PostUpdateResponse update(Long id, PostUpdateRequest postUpdateRequest) {
         Post post = postRepository.findByIdWithMember(id).orElseThrow(PostNotFoundException::new);
+        authChecker.authorityCheck(post.getMember());
         ImageUpdateResult imageUpdateResult = updateImages(postUpdateRequest.getAddedImages(), postUpdateRequest.getDeletedImageIds());
         post.update(postUpdateRequest, imageUpdateResult);
         return new PostUpdateResponse(id);
     }
 
-    /*  전달받은 이미지 수정요청을 처리하고 저장한 이미지, 삭제한 이미지 반 */
+    /*  전달받은 이미지 수정요청을 처리하고 저장한 이미지, 삭제한 이미지 반영 */
     private ImageUpdateResult updateImages(List<MultipartFile> addedImages, List<Long> deletedImageIds) {
         List<Image> uploadResult =  uploadImages(addedImages);
         List<Image> deletedImages = convertImageIdsToImages(deletedImageIds);
@@ -90,4 +92,6 @@ public class PostService {
     private void deleteImages(List<Image> images) {
         images.forEach(imageService::delete);
     }
+
+
 }

@@ -9,7 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -33,7 +33,7 @@ public class Image {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 
-    private final static String supportedExtension[] = {"jpg", "jpeg", "gif", "bmp", "png"};
+    private final static List<String> supportedExtensions = List.of("jpg", "jpeg", "gif", "bmp", "png");
 
     public Image(String originName) {
         this.originName = originName;
@@ -51,15 +51,18 @@ public class Image {
     }
 
     private String extractExtension(String originName) {
-        try {
-            String ext = originName.substring(originName.lastIndexOf(".") + 1);
-            if(isSupportedFormat(ext)) return ext;
-        } catch (StringIndexOutOfBoundsException e) { }
+        String extension = originName.substring(originName.lastIndexOf(".") + 1);
+
+        if (isSupportedFormat(extension)) {
+            return extension;
+        }
+
         throw new UnsupportedImageFormatException();
     }
 
-    private boolean isSupportedFormat(String ext) {
-        return Arrays.stream(supportedExtension).anyMatch(e -> e.equalsIgnoreCase(ext));
+    private boolean isSupportedFormat(String extension) {
+        return supportedExtensions.stream()
+                .anyMatch(supportedExtension -> supportedExtension.equalsIgnoreCase(extension));
     }
 
 }
