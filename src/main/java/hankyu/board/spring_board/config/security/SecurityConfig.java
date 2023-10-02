@@ -53,6 +53,16 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.PUT, "/api/posts/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").authenticated()
 
+                .antMatchers(HttpMethod.GET, "/api/comments").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").authenticated()
+
+                .antMatchers(HttpMethod.GET, "/api/messages/sender", "/api/messages/receiver").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/messages/{id}").authenticated()
+                .antMatchers(HttpMethod.POST, "/api/messages").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/messages/sender/{id}").authenticated()
+                .antMatchers(HttpMethod.DELETE,"/api/messages/receiver/{id}").authenticated()
+
                 .anyRequest().hasAnyRole("ADMIN");
 
 
