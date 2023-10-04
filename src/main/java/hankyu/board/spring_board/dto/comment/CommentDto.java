@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import hankyu.board.spring_board.dto.member.MemberDto;
 import hankyu.board.spring_board.entity.comment.Comment;
-import hankyu.board.spring_board.helper.HierarchyConverter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,15 +23,8 @@ public class CommentDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
     private List<CommentDto> children;
-    //category -> category.getParent() == null ? null : category.getParent().getId(),
 
-    public static List<CommentDto> toDtoList(List<Comment> comments) {
-        HierarchyConverter<Comment, CommentDto> converter = HierarchyConverter.create(
-                comments,
-                c -> new CommentDto(c.getId(), c.isDeleted() ? null : c.getContent(), c.isDeleted() ? null : MemberDto.toDto(c.getMember()), c.getCreatedAt(), new ArrayList<>()),
-                c -> c.getParent() == null ? null : c.getParent().getId(),
-                Comment::getId,
-                CommentDto::getChildren);
-        return converter.convertToHierarchy();
+    public static CommentDto toDto(Comment comment) {
+        return new CommentDto(comment.getId(), comment.getContent(), MemberDto.toDto(comment.getMember()), comment.getCreatedAt(), new ArrayList<>());
     }
 }

@@ -27,11 +27,11 @@ public class AuthChecker {
         }
     }
 
-    public boolean hasRole() {
+    private boolean hasRole() {
         return getMemberRoles().stream().anyMatch(memberRole -> memberRole == ROLE_ADMIN);
     }
 
-    public List<MemberRole> getMemberRoles() {
+    private List<MemberRole> getMemberRoles() {
         return getAuthentication().getAuthorities().stream()
                 .map(GrantedAuthority::toString)
                 .map(MemberRole::valueOf)
@@ -42,7 +42,7 @@ public class AuthChecker {
         return Long.valueOf(getAuthentication().getName());
     }
 
-    public Authentication getAuthentication() {
+    private Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
