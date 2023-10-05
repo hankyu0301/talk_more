@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.service.post;
 
-import hankyu.board.spring_board.aop.AuthChecker;
+import hankyu.board.spring_board.auth.AuthChecker;
 import hankyu.board.spring_board.dto.post.PostCreateRequest;
 import hankyu.board.spring_board.dto.post.PostDto;
 import hankyu.board.spring_board.dto.post.PostListDto;
@@ -61,7 +61,6 @@ class PostServiceTest {
     CategoryRepository categoryRepository;
     @Mock
     ImageService imageService;
-
     @Mock
     AuthChecker authChecker;
 
