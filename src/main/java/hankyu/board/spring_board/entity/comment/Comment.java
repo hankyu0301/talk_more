@@ -57,7 +57,6 @@ public class Comment extends BaseTimeEntity {
     }
 
     public Optional<Comment> findDeletableComment() {
-        this.deleted = true;
         return isDeletableComment() ? Optional.of(findDeletableCommentByParent()) : Optional.empty();
     }
 
@@ -79,11 +78,6 @@ public class Comment extends BaseTimeEntity {
         return this;
     }
 
-    /*  자식 댓글이 존재하는지?*/
-    private boolean hasChildren() {
-        return getChildren().size() != 0;
-    }
-
     /*  부모 댓글이 존재하고 그 댓글이 삭제되었는지?*/
     private boolean isDeletedParent() {
         return getParent() != null && getParent().isDeleted();
@@ -96,11 +90,6 @@ public class Comment extends BaseTimeEntity {
             if(!child.isDeleted()) {
                 return false;
             }
-            /*  자식 댓글이 삭제되었다면 최하위 댓글까지 조회*/
-            if(child.hasChildren()){
-                child.isDeletableComment();
-            }
-
         }
         return true;
     }

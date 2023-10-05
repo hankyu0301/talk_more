@@ -1,7 +1,7 @@
 package hankyu.board.spring_board.controller.sign;
 
-import hankyu.board.spring_board.dto.member.LogoutRequest;
 import hankyu.board.spring_board.dto.response.Response;
+import hankyu.board.spring_board.dto.sign.LogoutRequest;
 import hankyu.board.spring_board.dto.sign.SignInRequest;
 import hankyu.board.spring_board.dto.sign.SignUpRequest;
 import hankyu.board.spring_board.dto.token.TokenReissueRequest;

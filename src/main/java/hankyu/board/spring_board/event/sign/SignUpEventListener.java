@@ -18,7 +18,7 @@ public class SignUpEventListener {
     private final RedisService redisService;
 
     @TransactionalEventListener
-    @Async
+    @Async("ThreadPoolTaskExecutor")
     public void handleAlarm(SignUpEvent event) {
         String email = event.getCreatedMember().getEmail();
         String verificationCode = emailService.sendEmail(email);

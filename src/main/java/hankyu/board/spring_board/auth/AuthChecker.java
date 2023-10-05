@@ -1,4 +1,4 @@
-package hankyu.board.spring_board.aop;
+package hankyu.board.spring_board.auth;
 
 import hankyu.board.spring_board.entity.member.Member;
 import hankyu.board.spring_board.entity.member.MemberRole;

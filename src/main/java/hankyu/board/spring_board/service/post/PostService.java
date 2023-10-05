@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.service.post;
 
-import hankyu.board.spring_board.aop.AuthChecker;
+import hankyu.board.spring_board.auth.AuthChecker;
 import hankyu.board.spring_board.dto.post.*;
 import hankyu.board.spring_board.entity.category.Category;
 import hankyu.board.spring_board.entity.member.Member;

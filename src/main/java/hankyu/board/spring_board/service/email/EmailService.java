@@ -29,8 +29,9 @@ public class EmailService {
 
     @Transactional
     public void confirmEmail(EmailConfirmRequest request) {
-        //EventListener가 redis에 저장한 <code, email> 조회
+        //  EventListener가 redis에 저장한 <code, email> 조회
         String email = redisService.getData(RedisKey.EMAIL, request.getCode());
+        //  redis에서 가져온 email과 사용자가 제출한 email이 일치하는지 검증
         validateEmailAuthRequest(request, email);
         Member member = memberRepository.findByEmail(email).orElseThrow(MemberNotFoundException::new);
         member.confirmEmail();
@@ -40,7 +41,7 @@ public class EmailService {
     @Transactional
     public void resend(ResendEmailRequest req) {
         Member member = memberRepository.findByEmail(req.getEmail()).orElseThrow(MemberNotFoundException::new);
-        checkIfEmailAlreadyVerified(member);
+        isEmailAlreadyVerified(member);
         String verificationCode = sendEmail(req.getEmail());
         redisService.setDataWithExpiration(RedisKey.EMAIL, verificationCode, req.getEmail(), EMAIL_AUTH_EXPIRATION);
     }
@@ -63,14 +64,15 @@ public class EmailService {
         return UUID.randomUUID().toString();
     }
 
-
+    //  redis에서 가져온 email과 사용자가 제출한 email이 일치하는지 검증
     private void validateEmailAuthRequest(EmailConfirmRequest request, String email) {
         if (!StringUtils.hasText(email) && !request.getEmail().equals(email)) {
             throw new InvalidVerificationCodeException();
         }
     }
 
-    private void checkIfEmailAlreadyVerified(Member member) {
+    //  이미 인증처리된 member라면 exception
+    private void isEmailAlreadyVerified(Member member) {
         if(member.isEnabled()) {
             throw new EmailAlreadyVerifiedException(member.getEmail());
         }

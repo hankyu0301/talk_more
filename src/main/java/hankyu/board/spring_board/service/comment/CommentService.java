@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.service.comment;
 
-import hankyu.board.spring_board.aop.AuthChecker;
+import hankyu.board.spring_board.auth.AuthChecker;
 import hankyu.board.spring_board.dto.comment.CommentCreateRequest;
 import hankyu.board.spring_board.dto.comment.CommentDto;
 import hankyu.board.spring_board.dto.comment.CommentReadCondition;
@@ -30,6 +30,7 @@ public class CommentService {
     private final PostRepository postRepository;
     private final AuthChecker authChecker;
 
+    //  postId가 같은 댓글을 모두 조회
     @Transactional(readOnly = true)
     public List<CommentDto> readAll(CommentReadCondition cond) {
         List<Comment> comments = commentRepository.findAllWithMemberAndParentByPostIdOrderByParentIdAscNullsFirstCommentIdAsc(cond.getPostId());
@@ -52,13 +53,16 @@ public class CommentService {
     public void delete(Long id) {
         Comment comment = commentRepository.findWithMemberById(id).orElseThrow(CommentNotFoundException::new);
         authChecker.authorityCheck(comment.getMember());
-        /*  commentRepository.delete()를 사용하여 삭제가능한 최상위 댓글을 삭제 ->CASCADE 설정으로 하위댓글이 일괄삭제됨.*/
-        /*  삭제 가능한 댓글이 없어서 Optional.empty()를 반환받는다면 comment::delete로 comment.deleted = true; 로 변경만함.*/
-        comment.findDeletableComment().ifPresentOrElse(commentRepository::delete, comment::delete);
+        comment.delete();
+        //  commentRepository.delete()를 사용하여 삭제가능한 최상위 댓글을 삭제 -> CASCADE 설정으로 하위댓글이 일괄삭제됨.
+        comment.findDeletableComment().ifPresent(commentRepository::delete);
     }
 
+    //  List<Comment>를 List<CommentDto>로 변환
     private List<CommentDto> createCommentDtoList(List<Comment> comments) {
+        //  모든 comment를 <id, dto> 쌍으로 map에 담는다.
         Map<Long, CommentDto> commentMap = new HashMap<>();
+        //  parentId가 null인 최상위 댓글만을 담을 List
         List<CommentDto> roots = new ArrayList<>();
         for (Comment comment : comments) {
             Long id = comment.getId();
