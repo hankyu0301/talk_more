@@ -1,6 +1,7 @@
 package hankyu.board.spring_board.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hankyu.board.spring_board.dto.member.MemberDeleteRequest;
 import hankyu.board.spring_board.dto.member.MemberDto;
 import hankyu.board.spring_board.dto.member.MemberUpdateRequest;
 import hankyu.board.spring_board.service.member.MemberService;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static hankyu.board.spring_board.factory.dto.member.MemberDeleteRequestFactory.createMemberDeleteRequest;
 import static hankyu.board.spring_board.factory.dto.member.MemberUpdateReuqestFactory.createMemberUpdateRequest;
 import static hankyu.board.spring_board.factory.entity.member.MemberFactory.createMemberWithId;
 import static org.mockito.BDDMockito.given;
@@ -68,10 +70,13 @@ class MemberControllerTest {
     @Test
     void delete_Success() throws Exception {
         MemberDto memberDto = MemberDto.toDto(createMemberWithId(1L));
+        MemberDeleteRequest req = createMemberDeleteRequest();
 
-        mockMvc.perform(delete("/api/members/{id}", memberDto.getId()))
+        mockMvc.perform(delete("/api/members/{id}", memberDto.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk());
 
-        verify(memberService, times(1)).delete(memberDto.getId());
+        verify(memberService, times(1)).delete(memberDto.getId(), req);
     }
 }
