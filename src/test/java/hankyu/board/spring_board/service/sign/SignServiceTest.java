@@ -1,7 +1,7 @@
 package hankyu.board.spring_board.service.sign;
 
 import hankyu.board.spring_board.config.jwt.TokenProvider;
-import hankyu.board.spring_board.dto.member.LogoutRequest;
+import hankyu.board.spring_board.dto.sign.LogoutRequest;
 import hankyu.board.spring_board.dto.sign.SignUpRequest;
 import hankyu.board.spring_board.dto.token.TokenReissueRequest;
 import hankyu.board.spring_board.entity.member.Member;
@@ -25,9 +25,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import static hankyu.board.spring_board.factory.dto.sign.LogoutRequestFactory.createLogoutRequest;
 import static hankyu.board.spring_board.factory.dto.sign.SignUpRequestFactory.createSignUpRequest;
 import static hankyu.board.spring_board.factory.dto.sign.TokenReissueRequestFactory.createTokenReissueRequest;
+import static hankyu.board.spring_board.factory.entity.member.MemberFactory.createMember;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -145,6 +153,24 @@ class SignServiceTest {
 
         // When & Then
         assertThrows(InvalidRefreshTokenException.class, () -> signService.reissue(req)); // Replace with the actual exception type
+    }
+
+    @Test
+    void deleteMemberByExpiredEmailAuth_Success() {
+        // given
+        List<Member> expiredMembers = IntStream.rangeClosed(0,10)
+                .mapToObj(i -> createMember("test" + i + "@email.com","123456a!", "testUsername" + i , "testNickname" + i))
+                .collect(Collectors.toList());  // 만료된 회원 리스트를 생성
+        when(memberRepository.findMembersByCreatedAtBeforeAndEnabled(any(LocalDateTime.class), anyBoolean())).thenReturn(expiredMembers);
+
+        // when
+        signService.deleteMemberByExpiredEmailAuth();
+
+        // then
+        await().atMost(10, SECONDS) // 최대 10초까지 기다립니다. 필요에 따라 조절 가능.
+                .until(() -> {
+                    return memberRepository.count() == 0;
+                });
     }
 
     private Authentication createAuthentication() {

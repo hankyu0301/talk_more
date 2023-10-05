@@ -1,7 +1,7 @@
 package hankyu.board.spring_board.service.sign;
 
 import hankyu.board.spring_board.config.jwt.TokenProvider;
-import hankyu.board.spring_board.dto.member.LogoutRequest;
+import hankyu.board.spring_board.dto.sign.LogoutRequest;
 import hankyu.board.spring_board.dto.sign.SignInRequest;
 import hankyu.board.spring_board.dto.sign.SignUpRequest;
 import hankyu.board.spring_board.dto.token.TokenReissueRequest;
@@ -16,6 +16,8 @@ import hankyu.board.spring_board.service.redis.RedisKey;
 import hankyu.board.spring_board.service.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -23,6 +25,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -90,6 +95,17 @@ public class SignService {
         //  req.getAccessToken()으로 남은 유효시간을 읽어와서 유효시간동안 redis에 등록.
         //  redis에 등록된 accessToken으로 로그인이 불가(jwtAuthenticationFilter에서 확인)
         expireAccessToken(req.getAccessToken());
+    }
+
+    /*  이메일 미인증 상태이며 생성한지 24시간이 지난 계정들을 삭제
+    *   이 메서드는 매일 자정에 실행*/
+    @Transactional
+    @Async("ThreadPoolTaskScheduler")
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void deleteMemberByExpiredEmailAuth() {
+        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        List<Member> expiredMembers = memberRepository.findMembersByCreatedAtBeforeAndEnabled(yesterday, false);
+        memberRepository.deleteAll(expiredMembers);
     }
 
     private void validateRefreshToken(String refreshToken) {
