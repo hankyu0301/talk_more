@@ -6,7 +6,7 @@ import hankyu.board.spring_board.dto.comment.CommentDto;
 import hankyu.board.spring_board.dto.comment.CommentReadCondition;
 import hankyu.board.spring_board.entity.comment.Comment;
 import hankyu.board.spring_board.exception.comment.CommentNotFoundException;
-import hankyu.board.spring_board.exception.helper.CannotConvertHelperException;
+import hankyu.board.spring_board.exception.common.CannotConvertNestedStructureException;
 import hankyu.board.spring_board.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.exception.post.PostNotFoundException;
 import hankyu.board.spring_board.repository.comment.CommentRepository;
@@ -76,7 +76,7 @@ public class CommentService {
                     CommentDto parentDto = commentMap.get(parentId);
                     parentDto.getChildren().add(dto);
                 } catch (NullPointerException e) {
-                    throw new CannotConvertHelperException(e.getMessage());
+                    throw new CannotConvertNestedStructureException(e.getMessage());
                 }
             }
         }

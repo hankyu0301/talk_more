@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.config.jwt;
 
-import hankyu.board.spring_board.exception.sign.InvalidAccessTokenException;
+import hankyu.board.spring_board.exception.sign.AlreadyLoggedOutAccessTokenException;
 import hankyu.board.spring_board.service.redis.RedisKey;
 import hankyu.board.spring_board.service.redis.RedisService;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String blackListToken = redisService.getData(RedisKey.BLACK_LIST, authentication.getName());
 
             if(StringUtils.hasText(blackListToken) && blackListToken.equals(jwt)) {
-                throw new InvalidAccessTokenException();
+                throw new AlreadyLoggedOutAccessTokenException();
             }
 
             SecurityContextHolder.getContext().setAuthentication(authentication);

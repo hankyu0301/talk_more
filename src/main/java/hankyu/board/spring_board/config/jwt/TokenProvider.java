@@ -98,7 +98,7 @@ public class TokenProvider {
         } catch (UnsupportedJwtException e) {
             throw new UnsupportedTokenException();
         } catch (IllegalArgumentException e) {
-           throw new TokenInvalidFormException();
+           throw new MalformedJwtTokenException();
         }
     }
 
