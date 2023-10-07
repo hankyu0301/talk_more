@@ -124,7 +124,7 @@ class PostServiceTest {
     void read_Success() {
         // given
         Post post = createPostWithImages(List.of(createImage(), createImage()));
-        given(postRepository.findByIdWithMember(1L)).willReturn(Optional.of(post));
+        given(postRepository.findByIdWithMemberAndImages(1L)).willReturn(Optional.of(post));
 
 
         // when
@@ -138,7 +138,7 @@ class PostServiceTest {
     @Test
     void read_postNotFound_ThrowsException() {
         //given
-        given(postRepository.findByIdWithMember(anyLong())).willReturn(Optional.empty());
+        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.empty());
 
         //when,then
         assertThatThrownBy(() -> postService.read(1L)).isInstanceOf(PostNotFoundException.class);
@@ -150,9 +150,8 @@ class PostServiceTest {
         Image a = createImageWithIdAndOriginName(0L, "a.png");
         Image b = createImageWithIdAndOriginName(1L, "b.png");
         Post post = createPostWithImages(List.of(a, b));
-        given(postRepository.findByIdWithMember(anyLong())).willReturn(Optional.of(post));
+        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.of(post));
         given(imageService.create(any())).willReturn(createImageWithIdAndOriginName(2L,"c.png"));
-        given(imageService.read(anyLong())).willReturn(a);
         MockMultipartFile cFile = new MockMultipartFile("c", "c.png", MediaType.IMAGE_PNG_VALUE, "c".getBytes());
         PostUpdateRequest postUpdateRequest = createPostUpdateRequest("title", "content",List.of(cFile),List.of(a.getId()));
 
@@ -172,7 +171,7 @@ class PostServiceTest {
     @Test
     void update_postNotFound_ThrowsException() {
 
-        given(postRepository.findByIdWithMember(anyLong())).willReturn(Optional.empty());
+        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy( () -> postService.update(
                 1L,
@@ -184,7 +183,7 @@ class PostServiceTest {
     void delete_Success() {
         // given
         Post post = createPostWithImages(List.of(createImage(), createImage()));
-        given(postRepository.findByIdWithMember(anyLong())).willReturn(Optional.of(post));
+        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.of(post));
 
         // when
         postService.delete(1L);
@@ -197,7 +196,7 @@ class PostServiceTest {
     @Test
     void delete_postNotFound_ThrowsException() {
         // given
-        given(postRepository.findByIdWithMember(anyLong())).willReturn(Optional.empty());
+        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> postService.delete(1L)).isInstanceOf(PostNotFoundException.class);

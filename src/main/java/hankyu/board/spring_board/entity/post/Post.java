@@ -1,6 +1,5 @@
 package hankyu.board.spring_board.entity.post;
 
-import hankyu.board.spring_board.dto.post.ImageUpdateResult;
 import hankyu.board.spring_board.dto.post.PostUpdateRequest;
 import hankyu.board.spring_board.entity.category.Category;
 import hankyu.board.spring_board.entity.common.BaseTimeEntity;
@@ -46,32 +45,17 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post")
     private List<Image> images;
 
-    public Post(String title, String content, Member member, Category category, List<Image> images) {
+    public Post(String title, String content, Member member, Category category) {
         this.title = title;
         this.content = content;
         this.member = member;
         this.category = category;
         this.images = new ArrayList<>();
-        addImages(images);
     }
 
-    private void addImages(List<Image> added) {
-        added.stream().forEach(i -> {
-            images.add(i);
-            i.initPost(this);
-        });
-    }
-
-    private void deleteImages(List<Image> deleted) {
-        deleted.stream().forEach(di -> this.images.remove(di));
-    }
-
-    public void update(PostUpdateRequest req, ImageUpdateResult imageUpdateResult) {
+    public void update(PostUpdateRequest req) {
         this.title = req.getTitle();
         this.content = req.getContent();
-
-        addImages(imageUpdateResult.getAddedImages());
-        deleteImages(imageUpdateResult.getDeletedImages());
     }
 
 }

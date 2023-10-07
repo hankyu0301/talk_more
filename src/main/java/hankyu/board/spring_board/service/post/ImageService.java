@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ImageService {
@@ -24,14 +26,18 @@ public class ImageService {
         return image;
     }
 
+    //  Post의 update()에서 사용
     @Transactional
-    public Image read(Long id) {
-        return imageRepository.findById(id).orElseThrow(ImageNotFoundException::new);
-    }
-
-    @Transactional
-    public void delete(Image image) {
+    public void delete(Long id) {
+        Image image = imageRepository.findById(id).orElseThrow(ImageNotFoundException::new);
         imageRepository.delete(image);
         fileService.delete(image.getUniqueName());
+    }
+
+    //  Post의 delete()에서 사용
+    @Transactional
+    public void deleteAll(List<Image> images) {
+        imageRepository.deleteAll(images);
+        images.stream().map(Image::getUniqueName).forEach(fileService::delete);
     }
 }
