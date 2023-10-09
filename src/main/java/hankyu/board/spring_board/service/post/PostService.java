@@ -59,7 +59,7 @@ public class PostService {
     @Transactional
     public void delete(Long id) {
         Post post = postRepository.findByIdWithMemberAndImages(id).orElseThrow(PostNotFoundException::new);
-        authChecker.authorityCheck(post.getMember());
+        authChecker.authorityCheck(post.getMember().getId());
         imageService.deleteAll(post.getImages());
         postRepository.delete(post);
     }
@@ -68,7 +68,7 @@ public class PostService {
     @Transactional
     public PostUpdateResponse update(Long id, PostUpdateRequest postUpdateRequest) {
         Post post = postRepository.findByIdWithMemberAndImages(id).orElseThrow(PostNotFoundException::new);
-        authChecker.authorityCheck(post.getMember());
+        authChecker.authorityCheck(post.getMember().getId());
         updateImages(postUpdateRequest.getAddedImages(), postUpdateRequest.getDeletedImageIds());
         post.update(postUpdateRequest);
         return new PostUpdateResponse(id);

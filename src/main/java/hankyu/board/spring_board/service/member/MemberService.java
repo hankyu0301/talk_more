@@ -34,7 +34,7 @@ public class MemberService {
     @Transactional
     public void update(Long id, MemberUpdateRequest req) {
         Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
-        authChecker.authorityCheck(member);
+        authChecker.authorityCheck(member.getId());
         validateMemberUpdateRequest(req);
         member.update(req);
     }
@@ -42,7 +42,7 @@ public class MemberService {
     @Transactional
     public void delete(Long id, MemberDeleteRequest req) {
         Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
-        authChecker.authorityCheck(member);
+        authChecker.authorityCheck(member.getId());
         String accessToken = req.getAccessToken();
         expireAccessToken(accessToken);
         memberRepository.delete(member);
