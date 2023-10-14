@@ -1,6 +1,5 @@
 package hankyu.board.spring_board.service.post;
 
-import hankyu.board.spring_board.entity.post.Image;
 import hankyu.board.spring_board.exception.post.ImageNotFoundException;
 import hankyu.board.spring_board.exception.post.UnsupportedImageFormatException;
 import hankyu.board.spring_board.repository.post.ImageRepository;
@@ -19,7 +18,6 @@ import java.util.Optional;
 
 import static hankyu.board.spring_board.factory.entity.post.ImageFactory.createImage;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -67,10 +65,10 @@ class ImageServiceTest {
     @Test
     void delete_Success() {
         //given
-        Image image = createImage();
+        given(imageRepository.findById(anyLong())).willReturn(Optional.of(createImage()));
 
         //when
-        imageService.delete(image);
+        imageService.delete(anyLong());
 
         //then
         verify(imageRepository).delete(any());
@@ -78,25 +76,26 @@ class ImageServiceTest {
     }
 
     @Test
-    void read_Success() {
-        //given
-        Image image = createImage();
-        given(imageRepository.findById(1L)).willReturn(Optional.of(image));
-
-        //when
-        Image findImage = imageService.read(1L);
-
-        //then
-        assertThat(findImage.getId()).isEqualTo(image.getId());
-    }
-
-    @Test
-    void read_ImageNotFound_ThrowsException() {
+    void delete_ImageNotFound_ThrowsException() {
         //given
         given(imageRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when, then
-        assertThatThrownBy(() -> imageService.read(1L))
+        assertThatThrownBy(() -> imageService.delete(anyLong()))
                 .isInstanceOf(ImageNotFoundException.class);
     }
+
+    @Test
+    void deleteAll_Success() {
+        //given
+        given(imageRepository.findById(anyLong())).willReturn(Optional.of(createImage()));
+
+        //when
+        imageService.delete(anyLong());
+
+        //then
+        verify(imageRepository).delete(any());
+        verify(fileService).delete(anyString());
+    }
+
 }

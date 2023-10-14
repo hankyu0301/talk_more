@@ -40,12 +40,6 @@ public class Image {
         this.uniqueName = generateUniqueName(extractExtension(originName));
     }
 
-    public void initPost(Post post) {
-        if(this.post == null) {
-            this.post = post;
-        }
-    }
-
     private String generateUniqueName(String extension) {
         return UUID.randomUUID().toString() + "." + extension;
     }

@@ -1,5 +1,6 @@
 package hankyu.board.spring_board.service.member;
 
+import hankyu.board.spring_board.auth.AuthChecker;
 import hankyu.board.spring_board.config.jwt.TokenProvider;
 import hankyu.board.spring_board.dto.member.MemberDeleteRequest;
 import hankyu.board.spring_board.dto.member.MemberDto;
@@ -32,8 +33,8 @@ public class MemberServiceTest {
     @InjectMocks MemberService memberService;
 
     @Mock MemberRepository memberRepository;
-    @Mock
-    TokenProvider tokenProvider;
+    @Mock TokenProvider tokenProvider;
+    @Mock AuthChecker authChecker;
 
     @Mock
     RedisService redisService;

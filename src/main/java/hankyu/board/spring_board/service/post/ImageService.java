@@ -19,11 +19,10 @@ public class ImageService {
     private final FileService fileService;
 
     @Transactional
-    public Image create(MultipartFile multipartFile) {
+    public void create(MultipartFile multipartFile) {
         Image image = new Image(multipartFile.getOriginalFilename());
         imageRepository.save(image);
         fileService.upload(multipartFile, image.getUniqueName());
-        return image;
     }
 
     //  Post의 update()에서 사용

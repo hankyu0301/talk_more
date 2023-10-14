@@ -46,10 +46,6 @@ public class PostService {
         return new PostCreateResponse(post.getId());
     }
 
-    private void createAndSaveImage(List<MultipartFile> images) {
-        images.forEach(imageService::create);
-    }
-
     @Transactional(readOnly = true)
     public PostDto read(Long id) {
         Post post = postRepository.findByIdWithMemberAndImages(id).orElseThrow(PostNotFoundException::new);
@@ -80,13 +76,16 @@ public class PostService {
         uploadImages(addedImages);
         deleteImages(deletedImageIds);
     }
+    private void createAndSaveImage(List<MultipartFile> images) {
+        images.forEach(imageService::create);
+    }
 
     /*  업로드 할 사진파일을 imageService.create(MultipartFile file)에서 이미지 엔티티 저장, 파일을 저장*/
     private void uploadImages(List<MultipartFile> fileImages) {
         fileImages.forEach(imageService::create);
     }
 
-    /*  삭제할 image를 imageService.delete(Image image)에서 이미지 엔티티 삭제, 파일 삭제*/
+    /*  삭제할 image를 imageService.delete(Long id)에서 이미지 엔티티 삭제, 파일 삭제*/
     private void deleteImages(List<Long> imageIds) {
         imageIds.forEach(imageService::delete);
     }
