@@ -1,0 +1,8 @@
+aws:
+  secretsmanager:
+    name: spring-board
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
