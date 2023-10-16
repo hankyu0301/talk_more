@@ -11,7 +11,7 @@ public class MemberFactory {
     }
 
     public static Member createMember(String email, String password, String username, String nickname) {
-        return new Member("finebears@naver.com", "123456a!", "장한규","finebears");
+        return new Member(email, password, username, nickname);
     }
 
     public static Member createMemberWithId(Long id) {
