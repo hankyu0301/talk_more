@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -35,18 +33,16 @@ class MessageRepositoryTest {
 
     @Autowired MemberRepository memberRepository;
 
-    @PersistenceContext EntityManager em;
-
     Member member1, member2, member3;
 
     @BeforeEach
     void beforeEach() {
-        member1 = memberRepository.save(createMember("finebears1@naver.com", "123456a!", "장한규1","finebears1" ));
-        member2 = memberRepository.save(createMember("finebears2@naver.com", "123456a!", "장한규2","finebears2"));
-        member3 = memberRepository.save(createMember("finebears3@naver.com", "123456a!", "장한규3","finebears3"));
-        IntStream.rangeClosed(0, 100)
+        member1 = memberRepository.save(createMember("finebears1@naver.com", "123456a!", "hankyu1","finebears1" ));
+        member2 = memberRepository.save(createMember("finebears2@naver.com", "123456a!", "hankyu2","finebears2"));
+        member3 = memberRepository.save(createMember("finebears3@naver.com", "123456a!", "hankyu3","finebears3"));
+        IntStream.rangeClosed(0, 10)
                 .forEach(i -> messageRepository.save(createMessage("content" + i, member1, member2)));
-        IntStream.rangeClosed(0, 100)
+        IntStream.rangeClosed(0, 10)
                 .forEach(i -> messageRepository.save(createMessage("content" + i, member1, member3)));
     }
 
@@ -56,6 +52,7 @@ class MessageRepositoryTest {
         messageRepository.deleteAll();
     }
 
+    // 보낸 쪽지 확인
     @Test
     void findAllBySenderIdOrderByMessageIdDesc() {
         String keyword = "content";
@@ -66,11 +63,12 @@ class MessageRepositoryTest {
         Page<MessageSimpleDto> dtos = messageRepository.findAllBySenderIdOrderByMessageIdDesc(senderId, receiverId, keyword, PageRequest.of(cond.getPage(), cond.getSize()));
         MessageListDto messageListDto = MessageListDto.toDto(dtos);
 
-        assertThat(messageListDto.getTotalPages()).isEqualTo(11);
-        assertThat(messageListDto.getTotalElements()).isEqualTo(101);
+        assertThat(messageListDto.getTotalPages()).isEqualTo(2);
+        assertThat(messageListDto.getTotalElements()).isEqualTo(11);
         assertThat(messageListDto.isHasNext()).isTrue();
     }
 
+    //  받은 쪽지 확인
     @Test
     void findAllByReceiverIdOrderByMessageIdDesc() {
         String keyword = "content";
@@ -81,8 +79,8 @@ class MessageRepositoryTest {
         Page<MessageSimpleDto> dtos = messageRepository.findAllByReceiverIdOrderByMessageIdDesc(receiverId, senderId, keyword, PageRequest.of(cond.getPage(), cond.getSize()));
         MessageListDto messageListDto = MessageListDto.toDto(dtos);
 
-        assertThat(messageListDto.getTotalPages()).isEqualTo(11);
-        assertThat(messageListDto.getTotalElements()).isEqualTo(101);
+        assertThat(messageListDto.getTotalPages()).isEqualTo(2);
+        assertThat(messageListDto.getTotalElements()).isEqualTo(11);
         assertThat(messageListDto.isHasNext()).isTrue();
     }
 
@@ -96,8 +94,8 @@ class MessageRepositoryTest {
         Page<MessageSimpleDto> dtos = messageRepository.findAllBySenderIdOrderByMessageIdDesc(senderId, receiverId, keyword, PageRequest.of(cond.getPage(), cond.getSize()));
         MessageListDto messageListDto = MessageListDto.toDto(dtos);
 
-        assertThat(messageListDto.getTotalPages()).isEqualTo(11);
-        assertThat(messageListDto.getTotalElements()).isEqualTo(101);
+        assertThat(messageListDto.getTotalPages()).isEqualTo(2);
+        assertThat(messageListDto.getTotalElements()).isEqualTo(11);
         assertThat(messageListDto.isHasNext()).isTrue();
     }
 
@@ -111,8 +109,8 @@ class MessageRepositoryTest {
         Page<MessageSimpleDto> dtos = messageRepository.findAllByReceiverIdOrderByMessageIdDesc(receiverId, senderId, keyword, PageRequest.of(cond.getPage(), cond.getSize()));
         MessageListDto messageListDto = MessageListDto.toDto(dtos);
 
-        assertThat(messageListDto.getTotalPages()).isEqualTo(11);
-        assertThat(messageListDto.getTotalElements()).isEqualTo(101);
+        assertThat(messageListDto.getTotalPages()).isEqualTo(2);
+        assertThat(messageListDto.getTotalElements()).isEqualTo(11);
         assertThat(messageListDto.isHasNext()).isTrue();
     }
 
@@ -158,8 +156,8 @@ class MessageRepositoryTest {
         Page<MessageSimpleDto> dtos = messageRepository.findAllBySenderIdOrderByMessageIdDesc(senderId, receiverId, keyword, PageRequest.of(cond.getPage(), cond.getSize()));
         MessageListDto messageListDto = MessageListDto.toDto(dtos);
 
-        assertThat(messageListDto.getTotalPages()).isEqualTo(21);
-        assertThat(messageListDto.getTotalElements()).isEqualTo(202);
+        assertThat(messageListDto.getTotalPages()).isEqualTo(3);
+        assertThat(messageListDto.getTotalElements()).isEqualTo(22);
         assertThat(messageListDto.isHasNext()).isTrue();
     }
 
@@ -173,8 +171,8 @@ class MessageRepositoryTest {
         Page<MessageSimpleDto> dtos = messageRepository.findAllByReceiverIdOrderByMessageIdDesc(receiverId, senderId, keyword, PageRequest.of(cond.getPage(), cond.getSize()));
         MessageListDto messageListDto = MessageListDto.toDto(dtos);
 
-        assertThat(messageListDto.getTotalPages()).isEqualTo(11);
-        assertThat(messageListDto.getTotalElements()).isEqualTo(101);
+        assertThat(messageListDto.getTotalPages()).isEqualTo(2);
+        assertThat(messageListDto.getTotalElements()).isEqualTo(11);
         assertThat(messageListDto.isHasNext()).isTrue();
     }
 
@@ -188,8 +186,8 @@ class MessageRepositoryTest {
         Page<MessageSimpleDto> dtos = messageRepository.findAllBySenderIdOrderByMessageIdDesc(senderId, receiverId2, keyword, PageRequest.of(cond.getPage(), cond.getSize()));
         MessageListDto messageListDto = MessageListDto.toDto(dtos);
 
-        assertThat(messageListDto.getTotalPages()).isEqualTo(11);
-        assertThat(messageListDto.getTotalElements()).isEqualTo(101);
+        assertThat(messageListDto.getTotalPages()).isEqualTo(2);
+        assertThat(messageListDto.getTotalElements()).isEqualTo(11);
         assertThat(messageListDto.isHasNext()).isTrue();
     }
 
@@ -203,19 +201,19 @@ class MessageRepositoryTest {
         Page<MessageSimpleDto> dtos = messageRepository.findAllByReceiverIdOrderByMessageIdDesc(receiverId1, senderId, keyword, PageRequest.of(cond.getPage(), cond.getSize()));
         MessageListDto messageListDto = MessageListDto.toDto(dtos);
 
-        assertThat(messageListDto.getTotalPages()).isEqualTo(11);
-        assertThat(messageListDto.getTotalElements()).isEqualTo(101);
+        assertThat(messageListDto.getTotalPages()).isEqualTo(2);
+        assertThat(messageListDto.getTotalElements()).isEqualTo(11);
         assertThat(messageListDto.isHasNext()).isTrue();
     }
 
     @Test
     void findByIdIn_Success() {
-        List<Long> deletedMessageIds = List.of(199L, 200L, 201L, 202L, 203L);
+        List<Long> deletedMessageIds = List.of(1L, 2L, 3L, 4L, 5L);
         List<Message> all = messageRepository.findAll();
         List<Message> foundMessageList = messageRepository.findByIdIn(deletedMessageIds);
 
         assertThat(foundMessageList.size()).isNotZero();
-        assertThat(foundMessageList.size()).isEqualTo(4);
+        assertThat(foundMessageList.size()).isEqualTo(5);
     }
 
     @Test
@@ -226,8 +224,4 @@ class MessageRepositoryTest {
         assertThat(foundMessageList.size()).isZero();
     }
 
-    void clear() {
-        em.flush();
-        em.clear();
-    }
 }
