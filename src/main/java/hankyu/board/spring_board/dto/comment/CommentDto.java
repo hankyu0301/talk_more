@@ -25,6 +25,10 @@ public class CommentDto {
     private List<CommentDto> children;
 
     public static CommentDto toDto(Comment comment) {
-        return new CommentDto(comment.getId(), comment.getContent(), MemberDto.toDto(comment.getMember()), comment.getCreatedAt(), new ArrayList<>());
+        return new CommentDto(
+                comment.getId(),
+                comment.isDeleted() ? null : comment.getContent(),
+                MemberDto.toDto(comment.getMember()),
+                comment.getCreatedAt(), new ArrayList<>());
     }
 }

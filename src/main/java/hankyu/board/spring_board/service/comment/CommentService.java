@@ -68,12 +68,12 @@ public class CommentService {
             Long id = comment.getId();
             CommentDto dto = toDto(comment);
             commentMap.put(id, dto);
-            Long parentId = comment.getParent().getId();
-            if(parentId == null) {
+            Comment parent = comment.getParent();
+            if(parent == null) {
                 roots.add(dto);
             } else {
                 try {
-                    CommentDto parentDto = commentMap.get(parentId);
+                    CommentDto parentDto = commentMap.get(parent.getId());
                     parentDto.getChildren().add(dto);
                 } catch (NullPointerException e) {
                     throw new CannotConvertNestedStructureException(e.getMessage());

@@ -20,17 +20,18 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @Slf4j
 public class MessageController {
+
     private final MessageService messageService;
 
-    @ApiOperation(value = "송신자의 쪽지 목록 조회", notes = "송신자의 쪽지 목록을 조회한다.")
-    @GetMapping("/api/messages/sender")
+    @ApiOperation(value = "보낸 쪽지 목록 조회", notes = "보낸 쪽지 목록을 조회한다.")
+    @GetMapping("/api/messages/sent")
     @ResponseStatus(HttpStatus.OK)
     public Response readAllBySender(@Valid MessageReadCondition cond) {
         return Response.success(messageService.readAllSentMessageByCond(cond));
     }
 
-    @ApiOperation(value = "수신자의 쪽지 목록 조회", notes = "수신자의 쪽지 목록을 조회한다.")
-    @GetMapping("/api/messages/receiver")
+    @ApiOperation(value = "받은 쪽지 목록 조회", notes = "받은 쪽지 목록을 조회한다.")
+    @GetMapping("/api/messages/received")
     @ResponseStatus(HttpStatus.OK)
     public Response readAllByReceiver(@Valid MessageReadCondition cond) {
         return Response.success(messageService.readAllReceivedMessageByCond(cond));
@@ -51,7 +52,7 @@ public class MessageController {
         return Response.success();
     }
 
-    @ApiOperation(value = "송신자의 쪽지 삭제", notes = "송신자의 쪽지를 삭제한다.")
+    @ApiOperation(value = "보낸 쪽지 삭제", notes = "보낸 쪽지를 삭제한다.")
     @DeleteMapping("/api/messages/sender")
     @ResponseStatus(HttpStatus.OK)
     public Response deleteBySender(@Valid @RequestBody MessageDeleteRequest req) {
@@ -59,7 +60,7 @@ public class MessageController {
         return Response.success();
     }
 
-    @ApiOperation(value = "수신자의 쪽지 삭제", notes = "수신자의 쪽지를 삭제한다.")
+    @ApiOperation(value = "받은 쪽지 삭제", notes = "받은 쪽지를 삭제한다.")
     @DeleteMapping("/api/messages/receiver")
     @ResponseStatus(HttpStatus.OK)
     public Response deleteByReceiver(@Valid @RequestBody MessageDeleteRequest req) {

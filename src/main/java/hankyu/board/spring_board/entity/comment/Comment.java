@@ -94,7 +94,4 @@ public class Comment extends BaseTimeEntity {
         return true;
     }
 
-    public boolean isEqualMember(Member member) {
-        return this.member.equals(member);
-    }
 }

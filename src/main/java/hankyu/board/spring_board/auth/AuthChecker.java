@@ -2,7 +2,6 @@ package hankyu.board.spring_board.auth;
 
 import hankyu.board.spring_board.entity.member.MemberRole;
 import hankyu.board.spring_board.exception.common.UnauthorizedAccessException;
-import hankyu.board.spring_board.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,7 +15,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthChecker {
     private final MemberRole ROLE_ADMIN = MemberRole.ROLE_ADMIN;
-    private final MemberRepository memberRepository;
 
     public void authorityCheck(Long memberId) {
         if (!(hasRole() || memberId.equals(getMemberId()))) {

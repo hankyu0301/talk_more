@@ -53,7 +53,7 @@ public class MessageService {
     @Transactional
     public void create(MessageCreateRequest req) {
         Member sender = memberRepository.findById(authChecker.getMemberId()).orElseThrow(MemberNotFoundException::new);
-        Member receiver = memberRepository.findById(req.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Member receiver = memberRepository.findById(req.getReceiverId()).orElseThrow(MemberNotFoundException::new);
         Message message = new Message(req.getContent(), sender, receiver);
         messageRepository.save(message);
     }
@@ -61,29 +61,32 @@ public class MessageService {
     /*  보낸 Message 삭제*/
     @Transactional
     public void deleteBySender(MessageDeleteRequest req) {
-        List<Message> deletedMessages = convertIdsToListOfMessage(req.getDeletedMessageIds());
-        delete(deletedMessages, Message::deleteBySender);
+        // 제거할 메세지를 In 으로 한번에 조회 -> 조회한 메세지가 내가 보낸 메세지가 맞는지 확인
+        List<Message> deletedMessages = messageRepository.findByIdIn(req.getDeletedMessageIds());
+        messageRepository.deleteAll(deleteBySender(deletedMessages, Message::deleteBySender));
     }
 
     /*  받은 Message 삭제*/
     @Transactional
     public void deleteByReceiver(MessageDeleteRequest req) {
-        List<Message> deletedMessages = convertIdsToListOfMessage(req.getDeletedMessageIds());
-        delete(deletedMessages, Message::deleteByReceiver);
+        List<Message> deletedMessages = messageRepository.findByIdIn(req.getDeletedMessageIds());
+        messageRepository.deleteAll(deleteByReceiver(deletedMessages, Message::deleteByReceiver));
     }
 
-    private List<Message> convertIdsToListOfMessage(List<Long> deletedMessageIds) {
-        return deletedMessageIds.stream()
-                .map(id -> messageRepository.findById(id).orElseThrow(MemberNotFoundException::new))
+    private List<Message> deleteBySender(List<Message> deletedMessages, Consumer<Message> deleteFunction) {
+        return deletedMessages.stream()
+                .peek(message -> authChecker.authorityCheck(message.getSender().getId()))
+                .peek(deleteFunction)
+                .filter(Message::isDeletable)
                 .collect(toList());
     }
 
-    private void delete(List<Message> deletedMessages, Consumer<Message> deleteFunction) {
-        deletedMessages.stream()
+    private List<Message> deleteByReceiver(List<Message> deletedMessages, Consumer<Message> deleteFunction) {
+        return deletedMessages.stream()
                 .peek(message -> authChecker.authorityCheck(message.getReceiver().getId()))
                 .peek(deleteFunction)
                 .filter(Message::isDeletable)
-                .forEach(messageRepository::delete);
+                .collect(toList());
     }
 
 }

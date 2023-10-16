@@ -2,18 +2,19 @@ package hankyu.board.spring_board.dto.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 public class MessageListDto {
-    private int numberOfElements;
+    private Long totalElements;
+    private Integer totalPages;
     private boolean hasNext;
     private List<MessageSimpleDto> messageList;
 
-    public static MessageListDto toDto(Slice<MessageSimpleDto> slice) {
-        return new MessageListDto(slice.getNumberOfElements(), slice.hasNext(), slice.getContent());
+    public static MessageListDto toDto(Page<MessageSimpleDto> page) {
+        return new MessageListDto(page.getTotalElements(), page.getTotalPages(), page.hasNext(), page.getContent());
     }
 }
