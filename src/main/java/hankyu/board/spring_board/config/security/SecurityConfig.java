@@ -57,11 +57,11 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").authenticated()
 
-                .antMatchers(HttpMethod.GET, "/api/messages/sender", "/api/messages/receiver").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/messages/sent", "/api/messages/received").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/messages/{id}").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/messages").authenticated()
-                .antMatchers(HttpMethod.DELETE, "/api/messages/sender/{id}").authenticated()
-                .antMatchers(HttpMethod.DELETE,"/api/messages/receiver/{id}").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/messages/sender").authenticated()
+                .antMatchers(HttpMethod.DELETE,"/api/messages/receiver").authenticated()
 
                 .anyRequest().hasAnyRole("ADMIN");
 
