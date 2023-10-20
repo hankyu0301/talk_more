@@ -73,7 +73,7 @@ class PostServiceTest {
 
         //then
         verify(postRepository).save(any());
-        verify(imageService, times(req.getImages().size())).create(any());
+        verify(imageService, times(req.getImages().size())).create(any(), any());
     }
 
     @Test
@@ -137,7 +137,7 @@ class PostServiceTest {
         List<String> originNames = images.stream().map(Image::getOriginName).collect(toList());
         assertThat(originNames.size()).isEqualTo(3);
 
-        verify(imageService, times(1)).create(any());
+        verify(imageService, times(1)).create(any(), any());
         verify(imageService, times(1)).delete(any());
     }
 

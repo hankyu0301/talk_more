@@ -4,6 +4,7 @@ import hankyu.board.spring_board.exception.post.UnsupportedImageFormatException;
 import org.junit.jupiter.api.Test;
 
 import static hankyu.board.spring_board.factory.entity.post.ImageFactory.createImage;
+import static hankyu.board.spring_board.factory.entity.post.PostFactory.createPost;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class ImageTest {
@@ -23,7 +24,7 @@ class ImageTest {
         String invalidExtension = "invalid";
 
         //when, then
-        assertThatThrownBy( () -> new Image("image." + invalidExtension))
+        assertThatThrownBy( () -> new Image("image." + invalidExtension, createPost()))
                 .isInstanceOf(UnsupportedImageFormatException.class);
     }
 
@@ -33,7 +34,7 @@ class ImageTest {
         String originName = "image";
 
         //when, then
-        assertThatThrownBy( () -> new Image(originName))
+        assertThatThrownBy( () -> new Image(originName, createPost()))
                 .isInstanceOf(UnsupportedImageFormatException.class);
     }
 

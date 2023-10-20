@@ -1,6 +1,7 @@
 package hankyu.board.spring_board.service.post;
 
 import hankyu.board.spring_board.entity.post.Image;
+import hankyu.board.spring_board.entity.post.Post;
 import hankyu.board.spring_board.exception.post.ImageNotFoundException;
 import hankyu.board.spring_board.repository.post.ImageRepository;
 import hankyu.board.spring_board.service.file.FileService;
@@ -19,14 +20,14 @@ public class ImageService {
     private final FileService fileService;
 
     @Transactional
-    public void create(MultipartFile multipartFile) {
-        Image image = new Image(multipartFile.getOriginalFilename());
-        imageRepository.save(image);
+    public void create(MultipartFile multipartFile, Post post) {
+        Image image = new Image(multipartFile.getOriginalFilename(), post);
         fileService.upload(multipartFile, image.getUniqueName());
+        imageRepository.save(image);
     }
 
-    //  Post의 update()에서 사용
     @Transactional
+    //  Post의 update()에서 사용
     public void delete(Long id) {
         Image image = imageRepository.findById(id).orElseThrow(ImageNotFoundException::new);
         imageRepository.delete(image);

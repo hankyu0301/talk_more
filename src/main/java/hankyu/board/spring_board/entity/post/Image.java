@@ -5,8 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.List;
@@ -30,14 +28,14 @@ public class Image {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 
     private final static List<String> supportedExtensions = List.of("jpg", "jpeg", "gif", "bmp", "png");
 
-    public Image(String originName) {
+    public Image(String originName, Post post) {
         this.originName = originName;
         this.uniqueName = generateUniqueName(extractExtension(originName));
+        this.post = post;
     }
 
     private String generateUniqueName(String extension) {

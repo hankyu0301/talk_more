@@ -38,8 +38,7 @@ public class SignController {
     @PostMapping("/api/sign-in")
     @ResponseStatus(HttpStatus.OK)
     public Response signIn(@Valid @RequestBody SignInRequest req) {
-        signService.signIn(req);
-        return success();
+        return success(signService.signIn(req));
     }
 
     @ApiOperation(value = "로그아웃", notes = "로그아웃을 한다.")

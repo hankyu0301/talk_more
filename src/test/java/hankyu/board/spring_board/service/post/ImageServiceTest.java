@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static hankyu.board.spring_board.factory.entity.post.ImageFactory.createImage;
+import static hankyu.board.spring_board.factory.entity.post.PostFactory.createPost;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
@@ -43,7 +44,7 @@ class ImageServiceTest {
                 new MockMultipartFile("b", "b.PNG", MediaType.IMAGE_PNG_VALUE, "b".getBytes()));
 
         //when
-        multipartFiles.forEach(imageService::create);
+        multipartFiles.forEach(mf -> imageService.create(mf, createPost()));
 
         //then
         verify(imageRepository, times(multipartFiles.size())).save(any());
@@ -58,7 +59,7 @@ class ImageServiceTest {
                 new MockMultipartFile("b", "b.txt", MediaType.TEXT_PLAIN_VALUE, "b".getBytes()));
 
         //when, then
-        assertThatThrownBy(() -> multipartFiles.forEach(imageService::create))
+        assertThatThrownBy(() -> multipartFiles.forEach(mf -> imageService.create(mf, createPost())))
                 .isInstanceOf(UnsupportedImageFormatException.class);
     }
 
