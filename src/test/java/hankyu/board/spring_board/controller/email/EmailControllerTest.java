@@ -56,7 +56,7 @@ class EmailControllerTest {
         //given
         ResendEmailRequest req = createResendEmailRequest();
 
-        mockMvc.perform(post("/api/resend")
+        mockMvc.perform(post("/api/resend-email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk());

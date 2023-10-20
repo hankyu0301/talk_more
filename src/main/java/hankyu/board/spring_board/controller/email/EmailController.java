@@ -31,7 +31,7 @@ public class EmailController {
     }
 
     @ApiOperation(value = "인증 메일 재발송", notes = "인증 메일을 재발송 한다.")
-    @PostMapping("/api/resend")
+    @PostMapping("/api/resend-email")
     @ResponseStatus(HttpStatus.OK)
     public Response resendEmail(@Valid @RequestBody ResendEmailRequest req) {
         emailService.resend(req);
