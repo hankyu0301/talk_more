@@ -100,7 +100,7 @@ public class SignService {
     /*  이메일 미인증 상태이며 생성한지 24시간이 지난 계정들을 삭제
     *   이 메서드는 매일 자정에 실행*/
     @Transactional
-    @Async("ThreadPoolTaskScheduler")
+    @Async
     @Scheduled(cron = "0 0 0 * * ?")
     public void deleteMemberByExpiredEmailAuth() {
         LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
