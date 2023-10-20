@@ -1,5 +1,10 @@
 package hankyu.board.spring_board.config.security;
 
+import hankyu.board.spring_board.config.jwt.JwtAccessDeniedHandler;
+import hankyu.board.spring_board.config.jwt.JwtAuthenticationEntryPoint;
+import hankyu.board.spring_board.config.jwt.JwtSecurityConfig;
+import hankyu.board.spring_board.config.jwt.TokenProvider;
+import hankyu.board.spring_board.service.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +22,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
 
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final TokenProvider tokenProvider;
+    private final RedisService redisService;
+
     @Bean
     public PasswordEncoder passwordEncoder(){
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -33,27 +43,27 @@ public class SecurityConfig {
 
                 .and()
                 .exceptionHandling()
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/sign-in", "/api/sign-up","/api/token-reissue").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/sign-in", "/api/sign-up","/api/token-reissue","/api/resend-email").permitAll()
                 .antMatchers(HttpMethod.GET, "/image/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/**").permitAll()
 
                 .antMatchers(HttpMethod.GET, "/api/members/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/members/{id}").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/members/{id}").authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/members/assignAdmin/{id}").hasRole("ADMIN")
 
-                .antMatchers(HttpMethod.GET, "/api/categories").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, "/api/categories").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/categories/{id}").hasRole("ADMIN")
 
-                .antMatchers(HttpMethod.GET, "/api/posts").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
-                .antMatchers(HttpMethod.GET, "/api/posts/{id}").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/posts/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").authenticated()
 
-                .antMatchers(HttpMethod.GET, "/api/comments").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").authenticated()
 
@@ -63,7 +73,10 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.DELETE, "/api/messages/sender").authenticated()
                 .antMatchers(HttpMethod.DELETE,"/api/messages/receiver").authenticated()
 
-                .anyRequest().hasAnyRole("ADMIN");
+                .anyRequest().hasAnyRole("ADMIN")
+                .and()
+
+                .apply(new JwtSecurityConfig(tokenProvider, redisService));
 
 
         return http.build();
