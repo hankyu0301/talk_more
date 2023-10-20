@@ -48,6 +48,12 @@ public class MemberService {
         memberRepository.delete(member);
     }
 
+    @Transactional
+    public void assignAdmin(Long id) {
+        Member targetMember = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
+        targetMember.assignAdmin();
+    }
+
     private void validateMemberUpdateRequest(MemberUpdateRequest req) {
         if(memberRepository.existsByNickname(req.getNickname())) {
             throw new DuplicateNicknameException(req.getNickname());

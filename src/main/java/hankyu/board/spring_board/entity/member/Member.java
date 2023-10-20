@@ -53,6 +53,10 @@ public class Member extends BaseTimeEntity {
         return this;
     }
 
+    public void assignAdmin() {
+        this.memberRole = MemberRole.ROLE_ADMIN;
+    }
+
     public void publishCreatedEvent(ApplicationEventPublisher publisher) {
         publisher.publishEvent(
                 new SignUpEvent(MemberDto.toDto(this))

@@ -45,4 +45,12 @@ public class MemberController {
         return success();
     }
 
+    @ApiOperation(value = "관리자 권한 부여", notes = "관리자 권한 부여를 한다.")
+    @GetMapping("/api/members/assignAdmin/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Response assignAdmin(@ApiParam(value = "회원 id", required = true) @PathVariable Long id) {
+        memberService.assignAdmin(id);
+        return success();
+    }
+
 }
