@@ -4,7 +4,6 @@ import hankyu.board.spring_board.dto.response.Response;
 import hankyu.board.spring_board.exception.category.CategoryNotFoundException;
 import hankyu.board.spring_board.exception.comment.CommentNotFoundException;
 import hankyu.board.spring_board.exception.common.CannotConvertNestedStructureException;
-import hankyu.board.spring_board.exception.common.UnauthorizedAccessException;
 import hankyu.board.spring_board.exception.email.EmailAlreadyVerifiedException;
 import hankyu.board.spring_board.exception.email.InvalidVerificationCodeException;
 import hankyu.board.spring_board.exception.file.FileUploadFailureException;
@@ -14,10 +13,9 @@ import hankyu.board.spring_board.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.exception.post.ImageNotFoundException;
 import hankyu.board.spring_board.exception.post.PostNotFoundException;
 import hankyu.board.spring_board.exception.post.UnsupportedImageFormatException;
-import hankyu.board.spring_board.exception.sign.*;
+import hankyu.board.spring_board.exception.sign.LoginFailureException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -67,20 +65,6 @@ public class ExceptionControllerAdvice {
     }
 
     // 400 에러
-    @ExceptionHandler(TokenInvalidSecretKeyException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response tokenInvalidSecretKeyException() {
-        return Response.failure(400, "유효하지 않은 토큰 비밀키 입니다.");
-    }
-
-    // 400 에러
-    @ExceptionHandler(MalformedJwtTokenException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Response malformedJwtTokenException() {
-        return Response.failure(400, "유효하지 않은 토큰 값 입니다.");
-    }
-
-    // 400 에러
     @ExceptionHandler(InvalidVerificationCodeException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Response invalidVerficationCodeException() {
@@ -94,6 +78,20 @@ public class ExceptionControllerAdvice {
     public Response loginFailureException() {
         return Response.failure(401, "로그인에 실패하였습니다.");
     }
+/*
+    // 401 에러
+    @ExceptionHandler(TokenInvalidSecretKeyException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Response tokenInvalidSecretKeyException() {
+        return Response.failure(400, "유효하지 않은 토큰 비밀키 입니다.");
+    }
+
+    // 401 에러
+    @ExceptionHandler(MalformedJwtTokenException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Response malformedJwtTokenException() {
+        return Response.failure(400, "유효하지 않은 토큰 값 입니다.");
+    }
 
     // 401 응답
     @ExceptionHandler(ExpiredTokenException.class)
@@ -101,7 +99,6 @@ public class ExceptionControllerAdvice {
     public Response expiredTokenException() {
         return Response.failure(401, "만료된 토큰입니다.");
     }
-
 
     // 401 응답
     @ExceptionHandler(AlreadyLoggedOutAccessTokenException.class)
@@ -130,7 +127,7 @@ public class ExceptionControllerAdvice {
     public Response unauthorizedAccessException(){
         return Response.failure(403, "접근이 거부 되었습니다.");
     }
-
+*/
     // 404 응답
     // 요청한 카테고리를 찾을 수 없음
     @ExceptionHandler(CategoryNotFoundException.class)
