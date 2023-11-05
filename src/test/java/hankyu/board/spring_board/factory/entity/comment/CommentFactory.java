@@ -21,7 +21,7 @@ public class CommentFactory {
 
     public static Comment createDeletedComment(Comment parent) {
         Comment comment = new Comment("content", createMember(), createPost(), parent);
-        comment.delete();
+        comment.markAsDeleted();
         return comment;
     }
 

@@ -5,6 +5,8 @@ import hankyu.board.spring_board.dto.comment.CommentCreateRequest;
 import hankyu.board.spring_board.dto.comment.CommentDto;
 import hankyu.board.spring_board.dto.comment.CommentReadCondition;
 import hankyu.board.spring_board.entity.comment.Comment;
+import hankyu.board.spring_board.entity.member.Member;
+import hankyu.board.spring_board.entity.post.Post;
 import hankyu.board.spring_board.exception.comment.CommentNotFoundException;
 import hankyu.board.spring_board.exception.common.CannotConvertNestedStructureException;
 import hankyu.board.spring_board.exception.member.MemberNotFoundException;
@@ -16,7 +18,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static hankyu.board.spring_board.dto.comment.CommentDto.toDto;
 
@@ -34,18 +39,12 @@ public class CommentService {
     @Transactional(readOnly = true)
     public List<CommentDto> readAll(CommentReadCondition cond) {
         List<Comment> comments = commentRepository.findAllWithMemberAndParentByPostIdOrderByParentIdAscNullsFirstCommentIdAsc(cond.getPostId());
-        return createCommentDtoList(comments);
+        return convertCommentListToDtoList(comments);
     }
 
     @Transactional
     public void create(CommentCreateRequest req) {
-        Comment comment = new Comment(
-                req.getContent(),
-                memberRepository.findById(authChecker.getMemberId()).orElseThrow(MemberNotFoundException::new),
-                postRepository.findById(req.getPostId()).orElseThrow(PostNotFoundException::new),
-                Optional.ofNullable(req.getParentId())
-                        .map(id -> commentRepository.findById(id).orElseThrow(CommentNotFoundException::new))
-                        .orElse(null));
+        Comment comment = buildCommentFromRequest(req);
         commentRepository.save(comment);
     }
 
@@ -53,13 +52,21 @@ public class CommentService {
     public void delete(Long id) {
         Comment comment = commentRepository.findWithMemberById(id).orElseThrow(CommentNotFoundException::new);
         authChecker.authorityCheck(comment.getMember().getId());
-        comment.delete();
         //  commentRepository.delete()를 사용하여 삭제가능한 최상위 댓글을 삭제 -> CASCADE 설정으로 하위댓글이 일괄삭제됨.
-        comment.findDeletableComment().ifPresent(commentRepository::delete);
+        comment.delete().ifPresentOrElse(commentRepository::delete, comment::markAsDeleted);
+    }
+
+    private Comment buildCommentFromRequest(CommentCreateRequest req) {
+        Member member = memberRepository.findById(authChecker.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Post post = postRepository.findById(req.getPostId()).orElseThrow(PostNotFoundException::new);
+        Comment parent = req.getParentId() != null
+                ? commentRepository.findById(req.getParentId()).orElseThrow(CommentNotFoundException::new)
+                : null;
+        return new Comment(req.getContent(), member, post, parent);
     }
 
     //  List<Comment>를 List<CommentDto>로 변환
-    private List<CommentDto> createCommentDtoList(List<Comment> comments) {
+    private List<CommentDto> convertCommentListToDtoList(List<Comment> comments) {
         //  모든 comment를 <id, dto> 쌍으로 map에 담는다.
         Map<Long, CommentDto> commentMap = new HashMap<>();
         //  parentId가 null인 최상위 댓글만을 담을 List

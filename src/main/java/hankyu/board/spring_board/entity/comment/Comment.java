@@ -56,31 +56,33 @@ public class Comment extends BaseTimeEntity {
         this.deleted = false;
     }
 
-    public Optional<Comment> findDeletableComment() {
-        return isDeletableComment() ? Optional.of(findDeletableCommentByParent()) : Optional.empty();
-    }
-
-    public void delete() {
+    //삭제된 댓글임을 마킹해둠
+    public void markAsDeleted() {
         this.deleted = true;
     }
 
-    private Comment findDeletableCommentByParent() {
+    /*댓글이 삭제가능한 상태인지 확인 후 결과에 따라 다른 값을 return*/
+    public Optional<Comment> delete() {
+        /*  현재 댓글의 하위댓글이 모두 삭제된 상태인가?*/
+        return isDeletableComment()
+                ? Optional.of(findDeletableAncestorByParent())
+                : Optional.empty();
+    }
+
+    /*  삭제조건을 만족하는 최상위 댓글 반환*/
+    private Comment findDeletableAncestorByParent() {
         /*  부모 댓글이 존재하고 그 댓글이 삭제되었는지?*/
-        if (isDeletedParent()) {
+        if (isDeletableParent()) {
             /*  부모 댓글에 findDeletableCommentByParent()을 재귀 호출
-             *   isDeletedParent()를 만족하지 않는 댓글까지 방문(top)
-             *   -> top에서 내려오면 삭제가능한 댓글 중 가장 상위댓글을 찾고
-             *   상위 댓글부터 하위 댓글이 모두 삭제된 상태인지 확인함.
-             *   삭제된 상태면 해당 댓글 반환 : 삭제된 상태가 아니면 하위 댓글로 이동 후 확인 반복 */
-            Comment deletableParent = getParent().findDeletableCommentByParent();
-            if(getParent().isDeletableComment()) return deletableParent;
+             *  삭제조건을 만족하는 최상위댓글을 반환함 -> 그 댓글을 삭제하면 하위 댓글도 CASCADE 설정으로 일괄 삭제됨*/
+            return getParent().findDeletableAncestorByParent();
         }
         return this;
     }
 
-    /*  부모 댓글이 존재하고 그 댓글이 삭제되었는지?*/
-    private boolean isDeletedParent() {
-        return getParent() != null && getParent().isDeleted();
+    /*  부모 댓글이 존재하고 자식 댓글들이 모두 삭제된 상태인지? */
+    private boolean isDeletableParent() {
+        return getParent() != null && getParent().isDeletableComment();
     }
 
     private boolean isDeletableComment() {

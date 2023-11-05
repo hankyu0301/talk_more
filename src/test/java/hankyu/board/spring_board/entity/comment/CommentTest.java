@@ -19,7 +19,7 @@ class CommentTest {
         boolean beforeDeleted = comment.isDeleted();
 
         // when
-        comment.delete();
+        comment.markAsDeleted();
 
         // then
         boolean afterDeleted = comment.isDeleted();
@@ -46,11 +46,11 @@ class CommentTest {
         Comment comment6 = createCommentWithContent("content6",comment5);
         Comment comment7 = createCommentWithContent("content7",comment5);
 
-        comment2.delete();
-        comment3.delete();
-        comment5.delete();
-        comment6.delete();
-        comment7.delete();
+        comment2.markAsDeleted();
+        comment3.markAsDeleted();
+        comment5.markAsDeleted();
+        comment6.markAsDeleted();
+        comment7.markAsDeleted();
 
         ReflectionTestUtils.setField(comment1, "children", List.of(comment2));
         ReflectionTestUtils.setField(comment2, "children", List.of(comment3, comment4));
@@ -61,7 +61,7 @@ class CommentTest {
         ReflectionTestUtils.setField(comment7, "children", List.of());
 
         // when
-        Optional<Comment> deletableComment = comment7.findDeletableComment();
+        Optional<Comment> deletableComment = comment7.delete();
 
         // then
         assertThat(deletableComment).containsSame(comment3);
@@ -82,9 +82,9 @@ class CommentTest {
         Comment comment4 = createComment(comment2);
         Comment comment5 = createComment(comment3);
 
-        comment2.delete();
-        comment3.delete();
-        comment5.delete();
+        comment2.markAsDeleted();
+        comment3.markAsDeleted();
+        comment5.markAsDeleted();
 
         ReflectionTestUtils.setField(comment1, "children", List.of(comment2));
         ReflectionTestUtils.setField(comment2, "children", List.of(comment3, comment4));
@@ -93,7 +93,7 @@ class CommentTest {
         ReflectionTestUtils.setField(comment5, "children", List.of());
 
         // when
-        Optional<Comment> deletableComment = comment5.findDeletableComment();
+        Optional<Comment> deletableComment = comment5.delete();
 
         // then
         assertThat(deletableComment).containsSame(comment3);
