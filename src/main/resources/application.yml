@@ -28,5 +28,9 @@ spring:
 jwt:
   secret: ${JWT_SECRET}
 
+elastic:
+  ip:
+    address: ${ELASTIC_IP_ADDRESS}
+
 
 

@@ -10,6 +10,7 @@ import hankyu.board.spring_board.repository.member.MemberRepository;
 import hankyu.board.spring_board.service.redis.RedisKey;
 import hankyu.board.spring_board.service.redis.RedisService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
     private final RedisService redisService;
     private static final Long EMAIL_AUTH_EXPIRATION = 60*5L;
+
+    @Value("${elastic.ip.address}")
+    private String address;
 
     @Transactional
     public void confirmEmail(EmailConfirmRequest request) {
@@ -54,7 +58,7 @@ public class EmailService {
         smm.setTo(email);
         smm.setFrom("finebears@naver.com");
         smm.setSubject("회원가입 이메일 인증");
-        smm.setText("http://localhost:8080/api/confirm-email?email="+email+"&code="+code);
+        smm.setText("http://" + address + ":8080/api/confirm-email?email="+email+"&code="+code);
 
         javaMailSender.send(smm);
         return code;
