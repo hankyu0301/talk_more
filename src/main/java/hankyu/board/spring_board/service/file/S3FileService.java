@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.service.file;
 
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import hankyu.board.spring_board.exception.file.FileUploadFailureException;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @Profile("prod")
 public class S3FileService implements FileService {
 
-    private final AmazonS3Client s3Client;
+    private final AmazonS3 amazonS3Client;
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
@@ -28,7 +28,7 @@ public class S3FileService implements FileService {
         File file = new File(System.getProperty("user.home"), fileName);
         try {
             multipartFile.transferTo(file);
-            s3Client.putObject(new PutObjectRequest(bucket, fileName, file));
+            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
         } catch (IOException e) {
             throw new FileUploadFailureException(e.getCause());
         } finally {
@@ -40,6 +40,6 @@ public class S3FileService implements FileService {
 
     @Override
     public void delete(String fileName) {
-        s3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
     }
 }

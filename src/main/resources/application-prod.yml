@@ -1,3 +1,7 @@
+upload:
+  image:
+    location: https://finebears-board-bucket.s3.ap-northeast-2.amazonaws.com/
+
 spring:
   datasource:
     url: jdbc:mariadb://${MARIADB_URL}
@@ -28,5 +32,5 @@ cloud:
       bucket: ${S3_BUCKET}
     region:
       static: ap-northeast-2
-    stack:
-      auto: false
+  stack:
+    auto: false
