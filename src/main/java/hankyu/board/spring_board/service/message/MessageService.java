@@ -13,10 +13,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -73,20 +72,33 @@ public class MessageService {
         messageRepository.deleteAll(deleteByReceiver(deletedMessages, Message::deleteByReceiver));
     }
 
+    /*  1.  삭제하고자 하는 메세지를 한건씩 조회합니다.
+    *   2.  삭제 권한 있는지 확인합니다.
+    *   3.  메세지의 상태를 '삭제 되었음' 으로 변경합니다.
+    *   4.  메세지를 실제로 삭제해도 되는지 (수신자, 발신자 모두 '삭제 되었음' 상태로 변경했는지) 확인합니다.
+    *   5.  실제로 삭제해도 되는 메세지는 List에 담아 반환합니다.*/
     private List<Message> deleteBySender(List<Message> deletedMessages, Consumer<Message> deleteFunction) {
-        return deletedMessages.stream()
-                .peek(message -> authChecker.authorityCheck(message.getSender().getId()))
-                .peek(deleteFunction)
-                .filter(Message::isDeletable)
-                .collect(toList());
+        List<Message> result = new ArrayList<>();
+        for (Message message : deletedMessages) { //    1
+            authChecker.authorityCheck(message.getSender().getId());    //  2
+            deleteFunction.accept(message); //  3
+            if (message.isDeletable()) {    //  4
+                result.add(message);    //  5
+            }
+        }
+        return result;
     }
 
     private List<Message> deleteByReceiver(List<Message> deletedMessages, Consumer<Message> deleteFunction) {
-        return deletedMessages.stream()
-                .peek(message -> authChecker.authorityCheck(message.getReceiver().getId()))
-                .peek(deleteFunction)
-                .filter(Message::isDeletable)
-                .collect(toList());
+        List<Message> result = new ArrayList<>();
+        for (Message message : deletedMessages) {
+            authChecker.authorityCheck(message.getReceiver().getId());
+            deleteFunction.accept(message);
+            if (message.isDeletable()) {
+                result.add(message);
+            }
+        }
+        return result;
     }
 
 }
