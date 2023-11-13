@@ -50,7 +50,7 @@ class MessageControllerTest {
 
         // when, then
         mockMvc.perform(
-                        get("/api/messages/sent")
+                        get("/api/messages/sender")
                                 .param("size", String.valueOf(size))
                                 .param("page", String.valueOf(page))
                                 .param("keyword", keyword)
@@ -70,7 +70,7 @@ class MessageControllerTest {
 
         // when, then
         mockMvc.perform(
-                        get("/api/messages/received")
+                        get("/api/messages/receiver")
                                 .param("size", String.valueOf(size))
                                 .param("page", String.valueOf(page))
                                 .param("keyword", keyword)
