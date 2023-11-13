@@ -1,6 +1,5 @@
 package hankyu.board.spring_board.controller.member;
 
-import hankyu.board.spring_board.dto.member.MemberDeleteRequest;
 import hankyu.board.spring_board.dto.member.MemberUpdateRequest;
 import hankyu.board.spring_board.dto.response.Response;
 import hankyu.board.spring_board.service.member.MemberService;
@@ -37,20 +36,12 @@ public class MemberController {
         return success();
     }
 
+
     @ApiOperation(value = "회원 탈퇴", notes = "회원 탈퇴를 한다.")
     @DeleteMapping("/api/members/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Response delete(@ApiParam(value = "회원 id", required = true) @PathVariable Long id, @Valid @RequestBody MemberDeleteRequest req) {
-        memberService.delete(id, req);
+    public Response delete(@ApiParam(value = "회원 id", required = true) @PathVariable Long id) {
+        memberService.delete(id);
         return success();
     }
-
-    @ApiOperation(value = "관리자 권한 부여", notes = "관리자 권한 부여를 한다.")
-    @GetMapping("/api/members/assignAdmin/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public Response assignAdmin(@ApiParam(value = "회원 id", required = true) @PathVariable Long id) {
-        memberService.assignAdmin(id);
-        return success();
-    }
-
 }
