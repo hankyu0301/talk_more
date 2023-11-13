@@ -50,7 +50,7 @@ public class SignController {
     }
 
     @ApiOperation(value = "토큰 재발급", notes = "토큰 재발급을 한다.")
-    @PostMapping("/api/reissue")
+    @PostMapping("/api/token")
     @ResponseStatus(HttpStatus.OK)
     public Response reissue(@RequestBody TokenReissueRequest req) {
         return success(signService.reissue(req));

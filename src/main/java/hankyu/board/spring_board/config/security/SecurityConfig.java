@@ -48,26 +48,34 @@ public class SecurityConfig {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/api/sign-in", "/api/sign-up","/api/token-reissue","/api/resend-email").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/sign-in", "/api/sign-up","/api/log-out").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/log-out","/api/token").authenticated()
+
                 .antMatchers(HttpMethod.GET, "/image/**").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/**").permitAll()
 
-                .antMatchers(HttpMethod.GET, "/api/members/{id}").authenticated()
-                .antMatchers(HttpMethod.DELETE, "/api/members/{id}").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/members/{id}").permitAll()
                 .antMatchers(HttpMethod.PUT, "/api/members/{id}").authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/members/assignAdmin/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE, "/api/members/{id}").authenticated()
 
+                .antMatchers(HttpMethod.GET, "/api/categories").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/categories").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/api/categories/{id}").hasRole("ADMIN")
 
+                .antMatchers(HttpMethod.GET, "/api/email").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/email").permitAll()
+
+                .antMatchers(HttpMethod.GET, "/api/posts").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/posts").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/posts/{id}").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/posts/{id}").authenticated()
 
+                .antMatchers(HttpMethod.GET, "/api/comments").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/comments").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/comments/{id}").authenticated()
 
-                .antMatchers(HttpMethod.GET, "/api/messages/sent", "/api/messages/received").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/messages/sender").authenticated()
+                .antMatchers(HttpMethod.GET, "/api/messages/receiver").authenticated()
                 .antMatchers(HttpMethod.GET, "/api/messages/{id}").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/messages").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/messages/sender").authenticated()

@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -135,6 +136,7 @@ class SignServiceTest {
         TokenReissueRequest req = createTokenReissueRequest();
         when(tokenProvider.validateToken(anyString())).thenReturn(true);
         when(tokenProvider.getAuthentication(eq(req.getAccessToken()))).thenReturn(createAuthentication());
+        when(memberRepository.findById(1L)).thenReturn(Optional.of(createMember()));
         when(redisService.getData(eq(RedisKey.REFRESH_TOKEN), anyString())).thenReturn(req.getRefreshToken());
         when(tokenProvider.generateAccessToken(createAuthentication())).thenReturn("accessToken");
 
@@ -173,7 +175,8 @@ class SignServiceTest {
                 });
     }
 
+
     private Authentication createAuthentication() {
-        return new UsernamePasswordAuthenticationToken("testuser", "password");
+        return new UsernamePasswordAuthenticationToken(1L, "password");
     }
 }

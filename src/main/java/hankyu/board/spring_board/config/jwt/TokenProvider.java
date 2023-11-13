@@ -46,10 +46,10 @@ public class TokenProvider {
 
         // Access Token 생성
         return  Jwts.builder()
-                .setSubject(authentication.getName())       // MEMBER의 ID
-                .claim(AUTHORITIES_KEY, authorities)        // ROLE_NORMAL
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))     // 유효기간
-                .signWith(key, SignatureAlgorithm.HS512)    // 암호화 알고리즘
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 

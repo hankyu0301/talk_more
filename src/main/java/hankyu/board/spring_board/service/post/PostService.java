@@ -31,6 +31,7 @@ public class PostService {
     private final ImageService imageService;
     private final AuthChecker authChecker;
 
+    /*  QueryDSL로 작성한 메서드*/
     @Transactional(readOnly = true)
     public PostListDto readAll(PostReadCondition cond) {
         return PostListDto.toDto(
@@ -78,6 +79,7 @@ public class PostService {
         uploadImages(addedImages, post);
         deleteImages(deletedImageIds);
     }
+
     private void createAndSaveImage(List<MultipartFile> images, Post post) {
         images.forEach(i -> imageService.create(i, post));
     }
