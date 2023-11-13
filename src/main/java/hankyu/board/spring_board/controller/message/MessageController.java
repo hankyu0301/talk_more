@@ -24,14 +24,14 @@ public class MessageController {
     private final MessageService messageService;
 
     @ApiOperation(value = "보낸 쪽지 목록 조회", notes = "보낸 쪽지 목록을 조회한다.")
-    @GetMapping("/api/messages/sent")
+    @GetMapping("/api/messages/sender")
     @ResponseStatus(HttpStatus.OK)
     public Response readAllBySender(@Valid MessageReadCondition cond) {
         return Response.success(messageService.readAllSentMessageByCond(cond));
     }
 
     @ApiOperation(value = "받은 쪽지 목록 조회", notes = "받은 쪽지 목록을 조회한다.")
-    @GetMapping("/api/messages/received")
+    @GetMapping("/api/messages/receiver")
     @ResponseStatus(HttpStatus.OK)
     public Response readAllByReceiver(@Valid MessageReadCondition cond) {
         return Response.success(messageService.readAllReceivedMessageByCond(cond));

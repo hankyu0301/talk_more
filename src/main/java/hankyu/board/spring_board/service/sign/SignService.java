@@ -9,6 +9,7 @@ import hankyu.board.spring_board.dto.token.TokenResponse;
 import hankyu.board.spring_board.entity.member.Member;
 import hankyu.board.spring_board.exception.member.DuplicateEmailException;
 import hankyu.board.spring_board.exception.member.DuplicateNicknameException;
+import hankyu.board.spring_board.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.exception.sign.InvalidRefreshTokenException;
 import hankyu.board.spring_board.exception.sign.LoginFailureException;
 import hankyu.board.spring_board.repository.member.MemberRepository;
@@ -70,14 +71,15 @@ public class SignService {
     }
 
     /*  access/refresh Token을 전달받고
-    *   refreshToken이 유효하다면 메서드 호출자의 email로 redis를 조회하여 refreshToken을 가져옴.
+    *   refreshToken이 유효하다면 메서드 호출자의 id로 redis를 조회하여 refreshToken을 가져옴.
     *   전달받은 refreshToken과 redis의 refreshToken이 일치하다면 accessToken을 재발급
     * */
     @Transactional
     public String reissue(TokenReissueRequest req) {
         validateTokenReissueRequest(req.getRefreshToken());
         Authentication authentication = tokenProvider.getAuthentication(req.getAccessToken());
-        String refreshToken = redisService.getData(RedisKey.REFRESH_TOKEN, req.getRefreshToken());
+        Member member = memberRepository.findById(Long.valueOf(authentication.getName())).orElseThrow(MemberNotFoundException::new);
+        String refreshToken = redisService.getData(RedisKey.REFRESH_TOKEN, member.getEmail());
         validateRefreshTokenForReissue(refreshToken, req.getRefreshToken());
         return tokenProvider.generateAccessToken(authentication);
     }

@@ -88,11 +88,13 @@ class SignControllerTest {
         //given
         TokenReissueRequest req = createTokenReissueRequest();
 
-        mockMvc.perform(post("/api/reissue")
+        mockMvc.perform(post("/api/token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk());
 
         verify(signService, times(1)).reissue(req);
     }
+
+
 }

@@ -4,6 +4,7 @@ import hankyu.board.spring_board.dto.response.Response;
 import hankyu.board.spring_board.exception.category.CategoryNotFoundException;
 import hankyu.board.spring_board.exception.comment.CommentNotFoundException;
 import hankyu.board.spring_board.exception.common.CannotConvertNestedStructureException;
+import hankyu.board.spring_board.exception.common.UnauthorizedAccessException;
 import hankyu.board.spring_board.exception.email.EmailAlreadyVerifiedException;
 import hankyu.board.spring_board.exception.email.InvalidVerificationCodeException;
 import hankyu.board.spring_board.exception.file.FileUploadFailureException;
@@ -120,14 +121,14 @@ public class ExceptionControllerAdvice {
     public Response accessDeniedException(){
         return Response.failure(403, "접근이 거부 되었습니다.");
     }
-
+*/
     // 403 응답
     @ExceptionHandler(UnauthorizedAccessException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public Response unauthorizedAccessException(){
         return Response.failure(403, "접근이 거부 되었습니다.");
     }
-*/
+
     // 404 응답
     // 요청한 카테고리를 찾을 수 없음
     @ExceptionHandler(CategoryNotFoundException.class)
