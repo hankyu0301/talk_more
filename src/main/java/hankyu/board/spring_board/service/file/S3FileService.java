@@ -1,7 +1,9 @@
 package hankyu.board.spring_board.service.file;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import hankyu.board.spring_board.exception.file.FileUploadFailureException;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +12,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 @Service
 @RequiredArgsConstructor
@@ -25,21 +27,25 @@ public class S3FileService implements FileService {
 
     @Override
     public void upload(MultipartFile multipartFile, String fileName) {
-        File file = new File(System.getProperty("user.home"), fileName);
-        try {
-            multipartFile.transferTo(file);
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, file));
+
+        try(InputStream is = multipartFile.getInputStream()) {
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(multipartFile.getSize());
+            objectMetadata.setContentType(multipartFile.getContentType());
+
+            String key = "images/" + fileName;
+
+            amazonS3Client.putObject(new PutObjectRequest(bucket, key, is, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
             throw new FileUploadFailureException(e.getCause());
-        } finally {
-            if(file.exists()) {
-                file.delete();
-            }
         }
+
     }
 
     @Override
     public void delete(String fileName) {
-        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, fileName));
+        String key = "images/" + fileName;
+        amazonS3Client.deleteObject(new DeleteObjectRequest(bucket, key));
     }
 }
