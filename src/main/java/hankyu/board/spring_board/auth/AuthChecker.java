@@ -17,9 +17,9 @@ public class AuthChecker {
     private final MemberRole ROLE_ADMIN = MemberRole.ROLE_ADMIN;
 
     public void authorityCheck(Long memberId) {
-        if (!hasRole() || !(memberId.equals(getMemberId()))) {
-            throw new UnauthorizedAccessException();
-        }
+        if (hasRole() || (memberId.equals(getMemberId()))) {
+
+        } else throw new UnauthorizedAccessException();
     }
 
     private boolean hasRole() {
