@@ -50,7 +50,6 @@ class CommentTest {
         comment3.markAsDeleted();
         comment5.markAsDeleted();
         comment6.markAsDeleted();
-        comment7.markAsDeleted();
 
         ReflectionTestUtils.setField(comment1, "children", List.of(comment2));
         ReflectionTestUtils.setField(comment2, "children", List.of(comment3, comment4));
@@ -84,7 +83,6 @@ class CommentTest {
 
         comment2.markAsDeleted();
         comment3.markAsDeleted();
-        comment5.markAsDeleted();
 
         ReflectionTestUtils.setField(comment1, "children", List.of(comment2));
         ReflectionTestUtils.setField(comment2, "children", List.of(comment3, comment4));
@@ -99,4 +97,6 @@ class CommentTest {
         assertThat(deletableComment).containsSame(comment3);
 
     }
+
+
 }

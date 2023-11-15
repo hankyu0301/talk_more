@@ -53,7 +53,7 @@ public class CommentService {
         Comment comment = commentRepository.findWithMemberById(id).orElseThrow(CommentNotFoundException::new);
         authChecker.authorityCheck(comment.getMember().getId());
         //  commentRepository.delete()를 사용하여 삭제가능한 최상위 댓글을 삭제 -> CASCADE 설정으로 하위댓글이 일괄삭제됨.
-        comment.delete().ifPresentOrElse(commentRepository::delete, comment::markAsDeleted);
+        comment.delete().ifPresent(commentRepository::delete);
     }
 
     private Comment buildCommentFromRequest(CommentCreateRequest req) {
