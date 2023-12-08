@@ -58,7 +58,9 @@
 
 ### ERD
 
----<img width="485" alt="%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-11-12_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_4 52 59" src="https://github.com/hankyu0301/spring_board/assets/77604789/9c0bf176-1141-4028-9940-a40a029dcc76">
+<img width="485" alt="%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-11-12_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_4 52 59" src="https://github.com/hankyu0301/spring_board/assets/77604789/9c0bf176-1141-4028-9940-a40a029dcc76">
+
+---
 
 ### 배포 프로세스
 
