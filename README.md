@@ -8,8 +8,6 @@
 - 개발 인원 : 1명
 - 개발 기간 : 2023.09.12~2023.10.19
 
-📄 [Github Link](https://github.com/hankyu0301/spring_board) 
-
 🖥 [Swagger API Link](http://54.180.15.95:8080/swagger-ui/index.html#/) (프로젝트의 API 명세서 입니다.)
 
 ---
@@ -60,13 +58,11 @@
 
 ### ERD
 
-!https://prod-files-secure.s3.us-west-2.amazonaws.com/837e68c7-fab9-4de6-940a-9fddea3253bd/d75721a0-7632-490b-a56c-f954e47fbf80/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-11-12_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_4.52.59.png
-
----
+---<img width="485" alt="%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2023-11-12_%E1%84%8B%E1%85%A9%E1%84%92%E1%85%AE_4 52 59" src="https://github.com/hankyu0301/spring_board/assets/77604789/9c0bf176-1141-4028-9940-a40a029dcc76">
 
 ### 배포 프로세스
 
-!https://prod-files-secure.s3.us-west-2.amazonaws.com/837e68c7-fab9-4de6-940a-9fddea3253bd/c1329a01-f6cc-4758-9d6f-86e4aa5605df/image.png
+![image](https://github.com/hankyu0301/spring_board/assets/77604789/999c40fa-b445-470e-8fb2-9b1bcb58a568)
 
 - 로컬에서 작업한 내용을 Jenkins와 연동된 Github 원격 repository에 push 합니다.
 - Webhook을 이용해 새롭게 push된 내용을 기반으로 Jenkins 서버에서 Gradle을 통해 build를 실행합니다.
