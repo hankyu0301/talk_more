@@ -30,7 +30,7 @@
 ### JWT
 
 - Spring Security를 사용하는 JWT 로그인 방식을 구현하였습니다.
-- Refresh Token Storage로 Redis를 사용하여 만료된 토큰의 자동 삭제되도록 하였습니다.
+- Refresh Token Storage로 Redis를 사용하여 만료된 토큰이 자동 삭제되도록 하였고 I/O의 접근속도를 향상시켰습니다.
 - 로그아웃한 회원의 Access Token를 블랙리스트 처리하여 재사용을 방지하였습니다.
 
 ### JPA
