@@ -1,5 +1,6 @@
 package hankyu.board.spring_board.entity.comment;
 
+import hankyu.board.spring_board.domain.comment.entity.Comment;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 

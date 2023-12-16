@@ -1,13 +1,14 @@
 package hankyu.board.spring_board.repository.message;
 
-import hankyu.board.spring_board.config.JPAConfig;
-import hankyu.board.spring_board.config.QuerydslConfig;
-import hankyu.board.spring_board.dto.message.MessageListDto;
-import hankyu.board.spring_board.dto.message.MessageReadCondition;
-import hankyu.board.spring_board.dto.message.MessageSimpleDto;
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.entity.message.Message;
-import hankyu.board.spring_board.repository.member.MemberRepository;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.domain.message.dto.MessageListDto;
+import hankyu.board.spring_board.domain.message.dto.MessageReadCondition;
+import hankyu.board.spring_board.domain.message.dto.MessageSimpleDto;
+import hankyu.board.spring_board.domain.message.entity.Message;
+import hankyu.board.spring_board.domain.message.repository.MessageRepository;
+import hankyu.board.spring_board.global.config.JPAConfig;
+import hankyu.board.spring_board.global.config.QuerydslConfig;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @Import({QuerydslConfig.class, JPAConfig.class})
 class MessageRepositoryTest {
 
-    @Autowired MessageRepository messageRepository;
+    @Autowired
+    MessageRepository messageRepository;
 
     @Autowired MemberRepository memberRepository;
 

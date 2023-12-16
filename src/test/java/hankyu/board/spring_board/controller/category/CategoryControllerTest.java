@@ -1,8 +1,9 @@
 package hankyu.board.spring_board.controller.category;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hankyu.board.spring_board.dto.category.CategoryCreateRequest;
-import hankyu.board.spring_board.service.category.CategoryService;
+import hankyu.board.spring_board.domain.category.controller.CategoryController;
+import hankyu.board.spring_board.domain.category.dto.CategoryCreateRequest;
+import hankyu.board.spring_board.domain.category.service.CategoryService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

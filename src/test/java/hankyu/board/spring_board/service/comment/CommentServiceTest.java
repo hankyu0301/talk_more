@@ -1,16 +1,17 @@
 package hankyu.board.spring_board.service.comment;
 
-import hankyu.board.spring_board.auth.AuthChecker;
-import hankyu.board.spring_board.dto.comment.CommentCreateRequest;
-import hankyu.board.spring_board.dto.comment.CommentDto;
-import hankyu.board.spring_board.dto.comment.CommentReadCondition;
-import hankyu.board.spring_board.entity.comment.Comment;
-import hankyu.board.spring_board.exception.comment.CommentNotFoundException;
-import hankyu.board.spring_board.exception.member.MemberNotFoundException;
-import hankyu.board.spring_board.exception.post.PostNotFoundException;
-import hankyu.board.spring_board.repository.comment.CommentRepository;
-import hankyu.board.spring_board.repository.member.MemberRepository;
-import hankyu.board.spring_board.repository.post.PostRepository;
+import hankyu.board.spring_board.domain.comment.dto.CommentCreateRequest;
+import hankyu.board.spring_board.domain.comment.dto.CommentDto;
+import hankyu.board.spring_board.domain.comment.dto.CommentReadCondition;
+import hankyu.board.spring_board.domain.comment.entity.Comment;
+import hankyu.board.spring_board.domain.comment.repository.CommentRepository;
+import hankyu.board.spring_board.domain.comment.service.CommentService;
+import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.domain.post.repository.PostRepository;
+import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.exception.comment.CommentNotFoundException;
+import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
+import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -37,7 +38,8 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class CommentServiceTest {
 
-    @InjectMocks CommentService commentService;
+    @InjectMocks
+    CommentService commentService;
     @Mock CommentRepository commentRepository;
     @Mock MemberRepository memberRepository;
     @Mock PostRepository postRepository;

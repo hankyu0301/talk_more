@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.post;
 
-import hankyu.board.spring_board.dto.post.PostUpdateRequest;
+import hankyu.board.spring_board.domain.post.dto.PostUpdateRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

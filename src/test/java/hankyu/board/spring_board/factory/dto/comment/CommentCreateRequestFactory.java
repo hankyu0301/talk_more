@@ -1,7 +1,7 @@
 package hankyu.board.spring_board.factory.dto.comment;
 
 
-import hankyu.board.spring_board.dto.comment.CommentCreateRequest;
+import hankyu.board.spring_board.domain.comment.dto.CommentCreateRequest;
 
 public class CommentCreateRequestFactory {
     public static CommentCreateRequest createCommentCreateRequest() {

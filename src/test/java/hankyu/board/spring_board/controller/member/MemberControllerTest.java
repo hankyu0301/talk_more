@@ -1,9 +1,10 @@
 package hankyu.board.spring_board.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hankyu.board.spring_board.dto.member.MemberDto;
-import hankyu.board.spring_board.dto.member.MemberUpdateRequest;
-import hankyu.board.spring_board.service.member.MemberService;
+import hankyu.board.spring_board.domain.member.controller.MemberController;
+import hankyu.board.spring_board.domain.member.dto.MemberDto;
+import hankyu.board.spring_board.domain.member.dto.MemberUpdateRequest;
+import hankyu.board.spring_board.domain.member.service.MemberService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

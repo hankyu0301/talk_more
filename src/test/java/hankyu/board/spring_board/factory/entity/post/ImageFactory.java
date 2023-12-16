@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.entity.post;
 
-import hankyu.board.spring_board.entity.post.Image;
+import hankyu.board.spring_board.domain.post.entity.Image;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;

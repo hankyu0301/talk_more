@@ -1,8 +1,8 @@
 package hankyu.board.spring_board.factory.entity.post;
 
-import hankyu.board.spring_board.entity.category.Category;
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.entity.post.Post;
+import hankyu.board.spring_board.domain.category.entity.Category;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.post.entity.Post;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static hankyu.board.spring_board.factory.entity.category.CategoryFactory.createCategory;

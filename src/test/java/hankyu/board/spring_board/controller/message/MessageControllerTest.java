@@ -1,10 +1,11 @@
 package hankyu.board.spring_board.controller.message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hankyu.board.spring_board.dto.message.MessageCreateRequest;
-import hankyu.board.spring_board.dto.message.MessageDeleteRequest;
-import hankyu.board.spring_board.dto.message.MessageReadCondition;
-import hankyu.board.spring_board.service.message.MessageService;
+import hankyu.board.spring_board.domain.message.controller.MessageController;
+import hankyu.board.spring_board.domain.message.dto.MessageCreateRequest;
+import hankyu.board.spring_board.domain.message.dto.MessageDeleteRequest;
+import hankyu.board.spring_board.domain.message.dto.MessageReadCondition;
+import hankyu.board.spring_board.domain.message.service.MessageService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

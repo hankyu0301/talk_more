@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.post;
 
-import hankyu.board.spring_board.dto.post.PostReadCondition;
+import hankyu.board.spring_board.domain.post.dto.PostReadCondition;
 
 import java.util.List;
 

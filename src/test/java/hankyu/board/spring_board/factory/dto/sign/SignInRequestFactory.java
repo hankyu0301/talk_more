@@ -1,7 +1,7 @@
 package hankyu.board.spring_board.factory.dto.sign;
 
 
-import hankyu.board.spring_board.dto.sign.SignInRequest;
+import hankyu.board.spring_board.global.dto.sign.SignInRequest;
 
 public class SignInRequestFactory {
     public static SignInRequest createSignInRequest(){

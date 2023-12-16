@@ -1,7 +1,7 @@
 package hankyu.board.spring_board.factory.entity.member;
 
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.entity.member.MemberRole;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.member.entity.MemberRole;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class MemberFactory {

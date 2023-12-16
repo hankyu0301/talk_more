@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.entity.category;
 
-import hankyu.board.spring_board.entity.category.Category;
+import hankyu.board.spring_board.domain.category.entity.Category;
 
 public class CategoryFactory {
 

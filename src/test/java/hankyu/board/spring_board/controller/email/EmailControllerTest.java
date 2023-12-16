@@ -1,9 +1,10 @@
 package hankyu.board.spring_board.controller.email;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hankyu.board.spring_board.dto.email.EmailConfirmRequest;
-import hankyu.board.spring_board.dto.email.ResendEmailRequest;
-import hankyu.board.spring_board.service.email.EmailService;
+import hankyu.board.spring_board.domain.mail.controller.EmailController;
+import hankyu.board.spring_board.domain.mail.dto.EmailConfirmRequest;
+import hankyu.board.spring_board.domain.mail.dto.ResendEmailRequest;
+import hankyu.board.spring_board.domain.mail.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,10 +1,11 @@
 package hankyu.board.spring_board.service.category;
 
-import hankyu.board.spring_board.dto.category.CategoryCreateRequest;
-import hankyu.board.spring_board.dto.category.CategoryDto;
-import hankyu.board.spring_board.entity.category.Category;
-import hankyu.board.spring_board.exception.category.CategoryNotFoundException;
-import hankyu.board.spring_board.repository.category.CategoryRepository;
+import hankyu.board.spring_board.domain.category.dto.CategoryCreateRequest;
+import hankyu.board.spring_board.domain.category.dto.CategoryDto;
+import hankyu.board.spring_board.domain.category.entity.Category;
+import hankyu.board.spring_board.domain.category.repository.CategoryRepository;
+import hankyu.board.spring_board.domain.category.service.CategoryService;
+import hankyu.board.spring_board.global.exception.category.CategoryNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

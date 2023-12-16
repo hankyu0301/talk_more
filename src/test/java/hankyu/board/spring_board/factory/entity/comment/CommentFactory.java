@@ -1,9 +1,9 @@
 package hankyu.board.spring_board.factory.entity.comment;
 
 
-import hankyu.board.spring_board.entity.comment.Comment;
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.entity.post.Post;
+import hankyu.board.spring_board.domain.comment.entity.Comment;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.post.entity.Post;
 
 import static hankyu.board.spring_board.factory.entity.member.MemberFactory.createMember;
 import static hankyu.board.spring_board.factory.entity.post.PostFactory.createPost;

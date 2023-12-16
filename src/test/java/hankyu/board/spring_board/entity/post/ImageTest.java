@@ -1,6 +1,7 @@
 package hankyu.board.spring_board.entity.post;
 
-import hankyu.board.spring_board.exception.post.UnsupportedImageFormatException;
+import hankyu.board.spring_board.domain.post.entity.Image;
+import hankyu.board.spring_board.global.exception.post.UnsupportedImageFormatException;
 import org.junit.jupiter.api.Test;
 
 import static hankyu.board.spring_board.factory.entity.post.ImageFactory.createImage;

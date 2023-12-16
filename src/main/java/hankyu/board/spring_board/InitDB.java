@@ -1,13 +1,13 @@
 package hankyu.board.spring_board;
 
-import hankyu.board.spring_board.entity.category.Category;
-import hankyu.board.spring_board.entity.comment.Comment;
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.entity.post.Post;
-import hankyu.board.spring_board.repository.category.CategoryRepository;
-import hankyu.board.spring_board.repository.comment.CommentRepository;
-import hankyu.board.spring_board.repository.member.MemberRepository;
-import hankyu.board.spring_board.repository.post.PostRepository;
+import hankyu.board.spring_board.domain.category.entity.Category;
+import hankyu.board.spring_board.domain.category.repository.CategoryRepository;
+import hankyu.board.spring_board.domain.comment.entity.Comment;
+import hankyu.board.spring_board.domain.comment.repository.CommentRepository;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.domain.post.entity.Post;
+import hankyu.board.spring_board.domain.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;

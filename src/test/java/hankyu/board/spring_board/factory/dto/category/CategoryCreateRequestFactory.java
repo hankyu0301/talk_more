@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.category;
 
-import hankyu.board.spring_board.dto.category.CategoryCreateRequest;
+import hankyu.board.spring_board.domain.category.dto.CategoryCreateRequest;
 
 public class CategoryCreateRequestFactory {
 

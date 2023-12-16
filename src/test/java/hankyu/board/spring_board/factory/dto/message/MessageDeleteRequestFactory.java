@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.message;
 
-import hankyu.board.spring_board.dto.message.MessageDeleteRequest;
+import hankyu.board.spring_board.domain.message.dto.MessageDeleteRequest;
 
 import java.util.List;
 

@@ -1,17 +1,19 @@
 package hankyu.board.spring_board.service.sign;
 
-import hankyu.board.spring_board.config.jwt.TokenProvider;
-import hankyu.board.spring_board.dto.sign.LogoutRequest;
-import hankyu.board.spring_board.dto.sign.SignUpRequest;
-import hankyu.board.spring_board.dto.token.TokenReissueRequest;
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.event.sign.SignUpEvent;
-import hankyu.board.spring_board.exception.member.DuplicateEmailException;
-import hankyu.board.spring_board.exception.member.DuplicateNicknameException;
-import hankyu.board.spring_board.exception.sign.InvalidRefreshTokenException;
-import hankyu.board.spring_board.repository.member.MemberRepository;
-import hankyu.board.spring_board.service.redis.RedisKey;
-import hankyu.board.spring_board.service.redis.RedisService;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.domain.token.dto.TokenReissueRequest;
+import hankyu.board.spring_board.domain.token.entity.RefreshToken;
+import hankyu.board.spring_board.domain.token.service.RefreshTokenService;
+import hankyu.board.spring_board.global.dto.sign.LogoutRequest;
+import hankyu.board.spring_board.global.dto.sign.SignUpRequest;
+import hankyu.board.spring_board.global.event.sign.SignUpEvent;
+import hankyu.board.spring_board.global.exception.member.DuplicateEmailException;
+import hankyu.board.spring_board.global.exception.member.DuplicateNicknameException;
+import hankyu.board.spring_board.global.exception.sign.InvalidRefreshTokenException;
+import hankyu.board.spring_board.global.jwt.TokenProvider;
+import hankyu.board.spring_board.global.redis.RedisService;
+import hankyu.board.spring_board.global.sign.SignService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +25,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -61,9 +61,12 @@ class SignServiceTest {
     @Mock
     RedisService redisService;
 
+    @Mock
+    RefreshTokenService refreshTokenService;
+
     @BeforeEach
     public void setup() {
-        signService = new SignService(memberRepository, authenticationManagerBuilder, tokenProvider, passwordEncoder, publisher, redisService);
+        signService = new SignService(memberRepository, authenticationManagerBuilder, tokenProvider, passwordEncoder, publisher, redisService, refreshTokenService);
     }
 
     @Test
@@ -103,20 +106,18 @@ class SignServiceTest {
     }
 
     @Test
-    @Transactional
     void logout_Success() {
         // Given
         LogoutRequest req = createLogoutRequest();
         when(tokenProvider.validateToken(req.getRefreshToken())).thenReturn(true);
-        when(tokenProvider.getAuthentication(anyString())).thenReturn(createAuthentication());
         when(tokenProvider.getExpiration(anyString())).thenReturn(3600L); // 1 hour
 
         // When
         signService.logout(req);
 
         // Then
-        verify(redisService, times(1)).deleteData(RedisKey.REFRESH_TOKEN, req.getRefreshToken());
-        verify(redisService, times(1)).setDataWithExpiration(eq(RedisKey.BLACK_LIST), anyString(), eq(req.getAccessToken()), eq(3600L));
+        verify(refreshTokenService, times(1)).removeRefreshToken(req.getAccessToken());
+        verify(redisService, times(1)).setBlackList(anyString(), anyString(), anyLong());
     }
 
 
@@ -134,10 +135,10 @@ class SignServiceTest {
     void reissue_Success() {
         // Given
         TokenReissueRequest req = createTokenReissueRequest();
+        RefreshToken rtk = new RefreshToken("1", "rtk", "atk");
         when(tokenProvider.validateToken(anyString())).thenReturn(true);
         when(tokenProvider.getAuthentication(eq(req.getAccessToken()))).thenReturn(createAuthentication());
-        when(memberRepository.findById(1L)).thenReturn(Optional.of(createMember()));
-        when(redisService.getData(eq(RedisKey.REFRESH_TOKEN), anyString())).thenReturn(req.getRefreshToken());
+        when(refreshTokenService.getTokenByAccessToken(req.getAccessToken())).thenReturn(rtk);
         when(tokenProvider.generateAccessToken(createAuthentication())).thenReturn("accessToken");
 
         // When

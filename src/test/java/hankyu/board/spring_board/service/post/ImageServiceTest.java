@@ -1,9 +1,10 @@
 package hankyu.board.spring_board.service.post;
 
-import hankyu.board.spring_board.exception.post.ImageNotFoundException;
-import hankyu.board.spring_board.exception.post.UnsupportedImageFormatException;
-import hankyu.board.spring_board.repository.post.ImageRepository;
-import hankyu.board.spring_board.service.file.FileService;
+import hankyu.board.spring_board.domain.post.repository.ImageRepository;
+import hankyu.board.spring_board.domain.post.service.ImageService;
+import hankyu.board.spring_board.global.exception.post.ImageNotFoundException;
+import hankyu.board.spring_board.global.exception.post.UnsupportedImageFormatException;
+import hankyu.board.spring_board.global.file.FileService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,7 +1,7 @@
 package hankyu.board.spring_board.factory.entity.message;
 
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.entity.message.Message;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.message.entity.Message;
 
 import static hankyu.board.spring_board.factory.entity.member.MemberFactory.createMember;
 

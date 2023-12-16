@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.sign;
 
-import hankyu.board.spring_board.dto.sign.LogoutRequest;
+import hankyu.board.spring_board.global.dto.sign.LogoutRequest;
 
 public class LogoutRequestFactory {
 

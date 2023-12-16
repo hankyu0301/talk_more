@@ -1,14 +1,15 @@
 package hankyu.board.spring_board.service.member;
 
-import hankyu.board.spring_board.auth.AuthChecker;
-import hankyu.board.spring_board.config.jwt.TokenProvider;
-import hankyu.board.spring_board.dto.member.MemberDto;
-import hankyu.board.spring_board.dto.member.MemberUpdateRequest;
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.exception.member.DuplicateNicknameException;
-import hankyu.board.spring_board.exception.member.MemberNotFoundException;
-import hankyu.board.spring_board.repository.member.MemberRepository;
-import hankyu.board.spring_board.service.redis.RedisService;
+import hankyu.board.spring_board.domain.member.dto.MemberDto;
+import hankyu.board.spring_board.domain.member.dto.MemberUpdateRequest;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.domain.member.service.MemberService;
+import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.exception.member.DuplicateNicknameException;
+import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
+import hankyu.board.spring_board.global.jwt.TokenProvider;
+import hankyu.board.spring_board.global.redis.RedisService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -27,7 +28,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class MemberServiceTest {
 
-    @InjectMocks MemberService memberService;
+    @InjectMocks
+    MemberService memberService;
 
     @Mock MemberRepository memberRepository;
     @Mock TokenProvider tokenProvider;

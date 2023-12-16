@@ -1,9 +1,10 @@
 package hankyu.board.spring_board.controller.post;
 
-import hankyu.board.spring_board.dto.post.PostCreateRequest;
-import hankyu.board.spring_board.dto.post.PostReadCondition;
-import hankyu.board.spring_board.dto.post.PostUpdateRequest;
-import hankyu.board.spring_board.service.post.PostService;
+import hankyu.board.spring_board.domain.post.controller.PostController;
+import hankyu.board.spring_board.domain.post.dto.PostCreateRequest;
+import hankyu.board.spring_board.domain.post.dto.PostReadCondition;
+import hankyu.board.spring_board.domain.post.dto.PostUpdateRequest;
+import hankyu.board.spring_board.domain.post.service.PostService;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class PostControllerTest {
 
-    @InjectMocks PostController postController;
+    @InjectMocks
+    PostController postController;
     @Mock
     PostService postService;
 

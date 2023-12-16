@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.comment;
 
-import hankyu.board.spring_board.dto.comment.CommentReadCondition;
+import hankyu.board.spring_board.domain.comment.dto.CommentReadCondition;
 
 public class CommentReadConditionFactory {
     public static CommentReadCondition createCommentReadCondition() {

@@ -1,6 +1,6 @@
 package hankyu.board.spring_board.factory.dto.post;
 
-import hankyu.board.spring_board.dto.post.PostCreateRequest;
+import hankyu.board.spring_board.domain.post.dto.PostCreateRequest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;

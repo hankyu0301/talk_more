@@ -1,11 +1,12 @@
 package hankyu.board.spring_board.controller.sign;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hankyu.board.spring_board.dto.sign.LogoutRequest;
-import hankyu.board.spring_board.dto.sign.SignInRequest;
-import hankyu.board.spring_board.dto.sign.SignUpRequest;
-import hankyu.board.spring_board.dto.token.TokenReissueRequest;
-import hankyu.board.spring_board.service.sign.SignService;
+import hankyu.board.spring_board.domain.token.dto.TokenReissueRequest;
+import hankyu.board.spring_board.global.dto.sign.LogoutRequest;
+import hankyu.board.spring_board.global.dto.sign.SignInRequest;
+import hankyu.board.spring_board.global.dto.sign.SignUpRequest;
+import hankyu.board.spring_board.global.sign.SignController;
+import hankyu.board.spring_board.global.sign.SignService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

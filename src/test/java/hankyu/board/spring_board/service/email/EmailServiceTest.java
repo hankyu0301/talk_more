@@ -1,14 +1,14 @@
 package hankyu.board.spring_board.service.email;
 
-import hankyu.board.spring_board.dto.email.EmailConfirmRequest;
-import hankyu.board.spring_board.dto.email.ResendEmailRequest;
-import hankyu.board.spring_board.entity.member.Member;
-import hankyu.board.spring_board.exception.email.EmailAlreadyVerifiedException;
-import hankyu.board.spring_board.exception.email.InvalidVerificationCodeException;
-import hankyu.board.spring_board.exception.member.MemberNotFoundException;
-import hankyu.board.spring_board.repository.member.MemberRepository;
-import hankyu.board.spring_board.service.redis.RedisKey;
-import hankyu.board.spring_board.service.redis.RedisService;
+import hankyu.board.spring_board.domain.mail.dto.EmailConfirmRequest;
+import hankyu.board.spring_board.domain.mail.dto.ResendEmailRequest;
+import hankyu.board.spring_board.domain.mail.entity.AuthMailCode;
+import hankyu.board.spring_board.domain.mail.service.AuthMailCodeService;
+import hankyu.board.spring_board.domain.mail.service.EmailService;
+import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.global.exception.mail.EmailAlreadyVerifiedException;
+import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,9 +20,9 @@ import org.springframework.mail.javamail.JavaMailSender;
 import java.util.Optional;
 
 import static hankyu.board.spring_board.factory.dto.email.EmailAuthRequestFactory.createEmailAuthRequest;
-import static hankyu.board.spring_board.factory.dto.email.EmailAuthRequestFactory.createEmailAuthRequestWithInvalidCode;
 import static hankyu.board.spring_board.factory.dto.email.ResendEmailRequestFactory.createResendEmailRequest;
 import static hankyu.board.spring_board.factory.dto.email.ResendEmailRequestFactory.createResendEmailRequestWithEmail;
+import static hankyu.board.spring_board.factory.entity.mail.AuthMailCodeFactory.createAuthMailCode;
 import static hankyu.board.spring_board.factory.entity.member.MemberFactory.createMember;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -32,7 +32,8 @@ public class EmailServiceTest {
 
     @InjectMocks
     EmailService emailService;
-    @Mock RedisService redisService;
+    @Mock
+    AuthMailCodeService authMailCodeService;
     @Mock MemberRepository memberRepository;
     @Mock JavaMailSender javaMailSender;
 
@@ -52,44 +53,36 @@ public class EmailServiceTest {
     void confirmEmail_Success() {
         // Given
         EmailConfirmRequest req = createEmailAuthRequest();
+        AuthMailCode authMailCode = createAuthMailCode();
         Member member = createMember();
 
-        when(redisService.getData(RedisKey.EMAIL, req.getCode())).thenReturn(req.getEmail());
+        when(authMailCodeService.getAuthMailCodeByEmail(req.getEmail())).thenReturn(authMailCode);
         when(memberRepository.findByEmail(req.getEmail())).thenReturn(Optional.of(member));
 
         // When
         emailService.confirmEmail(req);
 
         // Then
-        verify(redisService, times(1)).getData(RedisKey.EMAIL, req.getCode());
+        verify(authMailCodeService, times(1)).getAuthMailCodeByEmail(req.getEmail());
         verify(memberRepository, times(1)).findByEmail(req.getEmail());
-        verify(redisService, times(1)).deleteData(RedisKey.EMAIL, req.getCode());
+        verify(authMailCodeService, times(1)).removeAuthCode(req.getEmail());
     }
 
-    @Test
-    void confirmEmail_InvalidVerificationCode_ThrowsException() {
-        // Given
-        EmailConfirmRequest req = createEmailAuthRequestWithInvalidCode();
-        when(redisService.getData(RedisKey.EMAIL, req.getCode())).thenReturn(null);
-
-        // When / Then
-        assertThrows(InvalidVerificationCodeException.class, () -> emailService.confirmEmail(req));
-
-        verify(redisService, times(1)).getData(RedisKey.EMAIL, req.getCode());
-        verifyNoInteractions(memberRepository);
-    }
 
     @Test
     void confirmEmail_MemberNotFound_ThrowsException() {
         // Given
         EmailConfirmRequest req = createEmailAuthRequest();
-        when(redisService.getData(RedisKey.EMAIL, req.getCode())).thenReturn(req.getEmail());
+        AuthMailCode authMailCode = createAuthMailCode();
+        Member member = createMember();
+
+        when(authMailCodeService.getAuthMailCodeByEmail(req.getEmail())).thenReturn(authMailCode);
         when(memberRepository.findByEmail(req.getEmail())).thenReturn(Optional.empty());
 
         // When / Then
         assertThrows(MemberNotFoundException.class, () -> emailService.confirmEmail(req));
 
-        verify(redisService, times(1)).getData(RedisKey.EMAIL, req.getCode());
+        verify(authMailCodeService, times(1)).getAuthMailCodeByEmail(req.getEmail());
         verify(memberRepository, times(1)).findByEmail(req.getEmail());
     }
     @Test
@@ -120,7 +113,6 @@ public class EmailServiceTest {
         assertThrows(EmailAlreadyVerifiedException.class, () -> emailService.resend(req));
 
         verify(memberRepository, times(1)).findByEmail(member.getEmail());
-        verifyNoInteractions(redisService, javaMailSender);
     }
 
     @Test
@@ -134,7 +126,6 @@ public class EmailServiceTest {
         assertThrows(MemberNotFoundException.class, () -> emailService.resend(req));
 
         verify(memberRepository, times(1)).findByEmail(member.getEmail());
-        verifyNoInteractions(redisService, javaMailSender);
     }
 
 }

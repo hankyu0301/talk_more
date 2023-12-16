@@ -1,12 +1,13 @@
 package hankyu.board.spring_board.service.message;
 
-import hankyu.board.spring_board.auth.AuthChecker;
-import hankyu.board.spring_board.dto.message.*;
-import hankyu.board.spring_board.entity.message.Message;
-import hankyu.board.spring_board.exception.member.MemberNotFoundException;
-import hankyu.board.spring_board.exception.message.MessageNotFoundException;
-import hankyu.board.spring_board.repository.member.MemberRepository;
-import hankyu.board.spring_board.repository.message.MessageRepository;
+import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.domain.message.dto.*;
+import hankyu.board.spring_board.domain.message.entity.Message;
+import hankyu.board.spring_board.domain.message.repository.MessageRepository;
+import hankyu.board.spring_board.domain.message.service.MessageService;
+import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
+import hankyu.board.spring_board.global.exception.message.MessageNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

@@ -1,9 +1,10 @@
 package hankyu.board.spring_board.controller.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hankyu.board.spring_board.dto.comment.CommentCreateRequest;
-import hankyu.board.spring_board.dto.comment.CommentReadCondition;
-import hankyu.board.spring_board.service.comment.CommentService;
+import hankyu.board.spring_board.domain.comment.controller.CommentController;
+import hankyu.board.spring_board.domain.comment.dto.CommentCreateRequest;
+import hankyu.board.spring_board.domain.comment.dto.CommentReadCondition;
+import hankyu.board.spring_board.domain.comment.service.CommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(MockitoExtension.class)
 class CommentControllerTest {
 
-    @InjectMocks CommentController commentController;
+    @InjectMocks
+    CommentController commentController;
     @Mock CommentService commentService;
 
     MockMvc mockMvc;
