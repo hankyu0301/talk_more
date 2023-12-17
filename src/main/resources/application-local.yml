@@ -1,6 +1,6 @@
 upload:
   image:
-    location: file:/Users/hankyujang/Desktop/springboot-janghankyu/remind/upload/
+    location: /Users/hankyujang/Desktop/springboot-janghankyu/remind/upload/
 
 spring:
   datasource:
