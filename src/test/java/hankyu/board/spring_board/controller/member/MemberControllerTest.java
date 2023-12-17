@@ -2,6 +2,7 @@ package hankyu.board.spring_board.controller.member;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hankyu.board.spring_board.domain.member.controller.MemberController;
+import hankyu.board.spring_board.domain.member.dto.MemberCreateRequest;
 import hankyu.board.spring_board.domain.member.dto.MemberDto;
 import hankyu.board.spring_board.domain.member.dto.MemberUpdateRequest;
 import hankyu.board.spring_board.domain.member.service.MemberService;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import static hankyu.board.spring_board.factory.dto.member.MemberCreateRequestFactory.createMemberCreateRequest;
 import static hankyu.board.spring_board.factory.dto.member.MemberUpdateReuqestFactory.createMemberUpdateRequest;
 import static hankyu.board.spring_board.factory.entity.member.MemberFactory.createMemberWithId;
 import static org.mockito.BDDMockito.given;
@@ -40,7 +42,19 @@ class MemberControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(memberController).build();
     }
 
-    //findMember, update, assignAdmin
+    @Test
+    void create_Success() throws Exception {
+        //given
+        MemberCreateRequest req = createMemberCreateRequest();
+
+        mockMvc.perform(post("/api/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isCreated());
+
+        verify(memberService, times(1)).create(req);
+    }
+
     @Test
     void findMember_Success() throws Exception {
         MemberDto memberDto = MemberDto.toDto(createMemberWithId(1L));

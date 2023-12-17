@@ -2,7 +2,7 @@ package hankyu.board.spring_board.domain.token.service;
 
 import hankyu.board.spring_board.domain.token.entity.RefreshToken;
 import hankyu.board.spring_board.domain.token.repository.RefreshTokenRepository;
-import hankyu.board.spring_board.global.exception.sign.RefreshTokenNotFoundException;
+import hankyu.board.spring_board.global.exception.token.RefreshTokenNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

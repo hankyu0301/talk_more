@@ -1,5 +1,6 @@
 package hankyu.board.spring_board.domain.member.controller;
 
+import hankyu.board.spring_board.domain.member.dto.MemberCreateRequest;
 import hankyu.board.spring_board.domain.member.dto.MemberUpdateRequest;
 import hankyu.board.spring_board.domain.member.service.MemberService;
 import hankyu.board.spring_board.global.dto.response.Response;
@@ -20,6 +21,14 @@ import static hankyu.board.spring_board.global.dto.response.Response.success;
 public class MemberController {
 
     private final MemberService memberService;
+
+    @ApiOperation(value = "회원 가입", notes = "회원 가입 한다.")
+    @PostMapping("/api/members")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Response createMember(@Valid @RequestBody MemberCreateRequest req) {
+        memberService.create(req);
+        return success();
+    }
 
     @ApiOperation(value = "회원 조회", notes = "회원 조회를 한다.")
     @GetMapping("/api/members/{id}")

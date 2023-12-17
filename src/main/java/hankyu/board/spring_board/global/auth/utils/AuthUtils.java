@@ -1,4 +1,4 @@
-package hankyu.board.spring_board.global.auth;
+package hankyu.board.spring_board.global.auth.utils;
 
 import hankyu.board.spring_board.domain.member.entity.MemberRole;
 import hankyu.board.spring_board.global.exception.common.UnauthorizedAccessException;
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class AuthChecker {
+public class AuthUtils {
     private final MemberRole ROLE_ADMIN = MemberRole.ROLE_ADMIN;
 
     public void authorityCheck(Long memberId) {
