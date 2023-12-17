@@ -5,7 +5,7 @@ import hankyu.board.spring_board.domain.member.repository.MemberRepository;
 import hankyu.board.spring_board.domain.message.dto.*;
 import hankyu.board.spring_board.domain.message.entity.Message;
 import hankyu.board.spring_board.domain.message.repository.MessageRepository;
-import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.auth.utils.AuthUtils;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.global.exception.message.MessageNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +23,13 @@ import java.util.function.Consumer;
 public class MessageService {
     private final MessageRepository messageRepository;
     private final MemberRepository memberRepository;
-    private final AuthChecker authChecker;
+    private final AuthUtils authUtils;
 
     /*  보낸 Message*/
     @Transactional(readOnly = true)
     public MessageListDto readAllSentMessageByCond(MessageReadCondition cond) {
         return MessageListDto.toDto(
-                messageRepository.findAllBySenderIdOrderByMessageIdDesc(authChecker.getMemberId(), cond.getTargetId(), cond.getKeyword(),  PageRequest.of(cond.getPage(), cond.getSize()))
+                messageRepository.findAllBySenderIdOrderByMessageIdDesc(authUtils.getMemberId(), cond.getTargetId(), cond.getKeyword(),  PageRequest.of(cond.getPage(), cond.getSize()))
         );
     }
 
@@ -37,7 +37,7 @@ public class MessageService {
     @Transactional(readOnly = true)
     public MessageListDto readAllReceivedMessageByCond(MessageReadCondition cond) {
         return MessageListDto.toDto(
-                messageRepository.findAllByReceiverIdOrderByMessageIdDesc(authChecker.getMemberId(),cond.getTargetId(), cond.getKeyword(),  PageRequest.of(cond.getPage(), cond.getSize()))
+                messageRepository.findAllByReceiverIdOrderByMessageIdDesc(authUtils.getMemberId(),cond.getTargetId(), cond.getKeyword(),  PageRequest.of(cond.getPage(), cond.getSize()))
         );
     }
 
@@ -51,7 +51,7 @@ public class MessageService {
     /*  Message 보내기*/
     @Transactional
     public void create(MessageCreateRequest req) {
-        Member sender = memberRepository.findById(authChecker.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Member sender = memberRepository.findById(authUtils.getMemberId()).orElseThrow(MemberNotFoundException::new);
         Member receiver = memberRepository.findById(req.getReceiverId()).orElseThrow(MemberNotFoundException::new);
         Message message = new Message(req.getContent(), sender, receiver);
         messageRepository.save(message);
@@ -80,7 +80,7 @@ public class MessageService {
     private List<Message> deleteBySender(List<Message> deletedMessages, Consumer<Message> deleteFunction) {
         List<Message> result = new ArrayList<>();
         for (Message message : deletedMessages) { //    1
-            authChecker.authorityCheck(message.getSender().getId());    //  2
+            authUtils.authorityCheck(message.getSender().getId());    //  2
             deleteFunction.accept(message); //  3
             if (message.isDeletable()) {    //  4
                 result.add(message);    //  5
@@ -92,7 +92,7 @@ public class MessageService {
     private List<Message> deleteByReceiver(List<Message> deletedMessages, Consumer<Message> deleteFunction) {
         List<Message> result = new ArrayList<>();
         for (Message message : deletedMessages) {
-            authChecker.authorityCheck(message.getReceiver().getId());
+            authUtils.authorityCheck(message.getReceiver().getId());
             deleteFunction.accept(message);
             if (message.isDeletable()) {
                 result.add(message);

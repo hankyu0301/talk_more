@@ -3,17 +3,17 @@ package hankyu.board.spring_board.domain.member.entity;
 import hankyu.board.spring_board.domain.common.BaseTimeEntity;
 import hankyu.board.spring_board.domain.member.dto.MemberDto;
 import hankyu.board.spring_board.domain.member.dto.MemberUpdateRequest;
-import hankyu.board.spring_board.global.event.sign.SignUpEvent;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import hankyu.board.spring_board.global.event.sign.MemberCreateEvent;
+import lombok.*;
 import org.springframework.context.ApplicationEventPublisher;
 
 import javax.persistence.*;
 
-@Entity
-@Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+@Entity
 public class Member extends BaseTimeEntity {
 
     @Id
@@ -59,7 +59,7 @@ public class Member extends BaseTimeEntity {
 
     public void publishCreatedEvent(ApplicationEventPublisher publisher) {
         publisher.publishEvent(
-                new SignUpEvent(MemberDto.toDto(this))
+                new MemberCreateEvent(MemberDto.toDto(this))
         );
     }
 

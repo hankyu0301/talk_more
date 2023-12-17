@@ -10,7 +10,7 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
-public class DelegateTokenUtil { //TODO: JwtAuthenticationFilter에서 delegate~ 를 따로 분리한 이유->필터와 역할과 토큰 생성을 분리하기 위함?
+public class DelegateTokenUtil {
     private final JwtTokenizer jwtTokenizer;
 
     public String delegateAccessToken(Member member) {

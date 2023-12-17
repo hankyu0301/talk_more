@@ -5,7 +5,7 @@ import hankyu.board.spring_board.domain.message.dto.*;
 import hankyu.board.spring_board.domain.message.entity.Message;
 import hankyu.board.spring_board.domain.message.repository.MessageRepository;
 import hankyu.board.spring_board.domain.message.service.MessageService;
-import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.auth.utils.AuthUtils;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.global.exception.message.MessageNotFoundException;
 import org.assertj.core.api.Assertions;
@@ -45,13 +45,13 @@ class MessageServiceTest {
     MemberRepository memberRepository;
 
     @Mock
-    AuthChecker authChecker;
+    AuthUtils authUtils;
 
     @Test
     void readAllSentMessageByCond_Success() {
         //given
         MessageReadCondition cond = createMessageReadCondition();
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(messageRepository.findAllBySenderIdOrderByMessageIdDesc(1L, cond.getTargetId(), cond.getKeyword(), PageRequest.of(cond.getPage(), cond.getSize()))).willReturn(Page.empty());
 
         //when
@@ -65,7 +65,7 @@ class MessageServiceTest {
     void readAllReceivedMessageByCond_Success() {
         //given
         MessageReadCondition cond = createMessageReadCondition();
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(messageRepository.findAllByReceiverIdOrderByMessageIdDesc(1L, cond.getTargetId(), cond.getKeyword(), PageRequest.of(cond.getPage(), cond.getSize()))).willReturn(Page.empty());
 
         //when
@@ -103,8 +103,8 @@ class MessageServiceTest {
     void create_Success() {
         // given
         MessageCreateRequest req = createMessageCreateRequest();
-        given(authChecker.getMemberId()).willReturn(1L);
-        given(memberRepository.findById(authChecker.getMemberId())).willReturn(Optional.of(createMember()));
+        given(authUtils.getMemberId()).willReturn(1L);
+        given(memberRepository.findById(authUtils.getMemberId())).willReturn(Optional.of(createMember()));
         given(memberRepository.findById(req.getReceiverId())).willReturn(Optional.of(createMember()));
 
         // when
@@ -118,8 +118,8 @@ class MessageServiceTest {
     void create_senderNotFoundException_ThrowsException() {
         // given
         MessageCreateRequest req = createMessageCreateRequest();
-        given(authChecker.getMemberId()).willReturn(1L);
-        given(memberRepository.findById(authChecker.getMemberId())).willReturn(Optional.empty());
+        given(authUtils.getMemberId()).willReturn(1L);
+        given(memberRepository.findById(authUtils.getMemberId())).willReturn(Optional.empty());
 
         // when
         assertThatThrownBy(() -> messageService.create(req)).isInstanceOf(MemberNotFoundException.class);
@@ -129,8 +129,8 @@ class MessageServiceTest {
     void create_receiverNotFoundException_ThrowsException() {
         // given
         MessageCreateRequest req = createMessageCreateRequest();
-        given(authChecker.getMemberId()).willReturn(1L);
-        given(memberRepository.findById(authChecker.getMemberId())).willReturn(Optional.of(createMember()));
+        given(authUtils.getMemberId()).willReturn(1L);
+        given(memberRepository.findById(authUtils.getMemberId())).willReturn(Optional.of(createMember()));
         given(memberRepository.findById(req.getReceiverId())).willReturn(Optional.empty());
 
         // when

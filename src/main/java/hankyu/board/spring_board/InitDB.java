@@ -74,7 +74,7 @@ public class InitDB {
         Category category = categoryRepository.findAll().get(0);
         IntStream.range(0, 100)
                 .forEach(i -> postRepository.save(
-                        new Post("title" + i, "content" + i, member, category)
+                        new Post("title" + i, "content" + i, member, category, List.of())
                 ));
     }
 

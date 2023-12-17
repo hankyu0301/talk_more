@@ -10,13 +10,13 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SignUpEventListener {
+public class MemberCreateEventListener {
 
     private final EmailService emailService;
 
     @TransactionalEventListener
     @Async
-    public void handleAlarm(SignUpEvent event) {
+    public void handleAlarm(MemberCreateEvent event) {
         String email = event.getCreatedMember().getEmail();
         emailService.sendEmail(email);
     }

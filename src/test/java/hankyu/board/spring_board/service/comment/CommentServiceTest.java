@@ -8,7 +8,7 @@ import hankyu.board.spring_board.domain.comment.repository.CommentRepository;
 import hankyu.board.spring_board.domain.comment.service.CommentService;
 import hankyu.board.spring_board.domain.member.repository.MemberRepository;
 import hankyu.board.spring_board.domain.post.repository.PostRepository;
-import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.auth.utils.AuthUtils;
 import hankyu.board.spring_board.global.exception.comment.CommentNotFoundException;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
@@ -43,13 +43,14 @@ class CommentServiceTest {
     @Mock CommentRepository commentRepository;
     @Mock MemberRepository memberRepository;
     @Mock PostRepository postRepository;
-    @Mock AuthChecker authChecker;
+    @Mock
+    AuthUtils authUtils;
 
     @Test
     void create_Success() {
         //given
         CommentCreateRequest req = createCommentCreateRequest();
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(postRepository.findById(req.getPostId())).willReturn(Optional.of(createPost()));
 
@@ -64,7 +65,7 @@ class CommentServiceTest {
     void create_memberNotFound_ThrowsException() {
         //given
         CommentCreateRequest req = createCommentCreateRequest();
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when, then
@@ -75,7 +76,7 @@ class CommentServiceTest {
     void create_postNotFound_ThrowsException() {
         //given
         CommentCreateRequest req = createCommentCreateRequest();
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(postRepository.findById(req.getPostId())).willReturn(Optional.empty());
 
@@ -87,7 +88,7 @@ class CommentServiceTest {
     void create_parentCommentNotFound_ThrowsException() {
         //given
         CommentCreateRequest req = createCommentCreateRequestWithParentId(1L);
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(postRepository.findById(req.getPostId())).willReturn(Optional.of(createPost()));
         given(commentRepository.findById(req.getParentId())).willReturn(Optional.empty());

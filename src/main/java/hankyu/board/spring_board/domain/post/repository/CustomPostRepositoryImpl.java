@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.querydsl.core.types.Projections.constructor;
-import static hankyu.board.spring_board.entity.post.QPost.post;
+import static hankyu.board.spring_board.domain.post.entity.QPost.post;
 
 
 @Transactional(readOnly = true)

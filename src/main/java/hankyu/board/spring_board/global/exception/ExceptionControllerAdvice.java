@@ -11,12 +11,12 @@ import hankyu.board.spring_board.global.exception.mail.AuthMailCodeNotFoundExcep
 import hankyu.board.spring_board.global.exception.mail.EmailAlreadyVerifiedException;
 import hankyu.board.spring_board.global.exception.member.DuplicateEmailException;
 import hankyu.board.spring_board.global.exception.member.DuplicateNicknameException;
+import hankyu.board.spring_board.global.exception.member.LoginFailureException;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.global.exception.post.ImageNotFoundException;
 import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
 import hankyu.board.spring_board.global.exception.post.UnsupportedImageFormatException;
-import hankyu.board.spring_board.global.exception.sign.LoginFailureException;
-import hankyu.board.spring_board.global.exception.sign.RefreshTokenNotFoundException;
+import hankyu.board.spring_board.global.exception.token.RefreshTokenNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
@@ -86,14 +86,14 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(TokenInvalidSecretKeyException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Response tokenInvalidSecretKeyException() {
-        return Response.failure(400, "유효하지 않은 토큰 비밀키 입니다.");
+        return Response.failure(401, "유효하지 않은 토큰 비밀키 입니다.");
     }
 
     // 401 에러
     @ExceptionHandler(MalformedJwtTokenException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public Response malformedJwtTokenException() {
-        return Response.failure(400, "유효하지 않은 토큰 값 입니다.");
+        return Response.failure(401, "유효하지 않은 토큰 값 입니다.");
     }
 
     // 401 응답
@@ -127,7 +127,7 @@ public class ExceptionControllerAdvice {
     // 403 응답
     @ExceptionHandler(UnauthorizedAccessException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Response unauthorizedAccessException(){
+    public Response unauthorizedAccessException(UnauthorizedAccessException e){
         return Response.failure(403, "접근이 거부 되었습니다.");
     }
 

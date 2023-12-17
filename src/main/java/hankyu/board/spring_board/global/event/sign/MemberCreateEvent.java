@@ -6,6 +6,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SignUpEvent {
+public class MemberCreateEvent {
     private MemberDto createdMember;
 }

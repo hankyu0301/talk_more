@@ -1,4 +1,4 @@
-package hankyu.board.spring_board.global.dto.sign;
+package hankyu.board.spring_board.domain.member.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -15,9 +15,9 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SignUpRequest {
+public class MemberCreateRequest {
 
-    @ApiModelProperty(value = "이메일", notes = "이메일을 입력해주세요", required = true, example = "member@email.com")
+    @ApiModelProperty(value = "이메일", notes = "이메일을 입력해주세요", required = true, example = "finebears@naver.com")
     @Email(message = "이메일 형식을 맞춰주세요.")
     @NotBlank(message = "이메일을 입력해주세요.")
     private String email;

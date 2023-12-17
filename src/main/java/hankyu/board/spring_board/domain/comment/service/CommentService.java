@@ -9,7 +9,7 @@ import hankyu.board.spring_board.domain.member.entity.Member;
 import hankyu.board.spring_board.domain.member.repository.MemberRepository;
 import hankyu.board.spring_board.domain.post.entity.Post;
 import hankyu.board.spring_board.domain.post.repository.PostRepository;
-import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.auth.utils.AuthUtils;
 import hankyu.board.spring_board.global.exception.comment.CommentNotFoundException;
 import hankyu.board.spring_board.global.exception.common.CannotConvertNestedStructureException;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
@@ -33,7 +33,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final PostRepository postRepository;
-    private final AuthChecker authChecker;
+    private final AuthUtils authUtils;
 
     //  postId가 같은 댓글을 모두 조회
     @Transactional(readOnly = true)
@@ -51,13 +51,13 @@ public class CommentService {
     @Transactional
     public void delete(Long id) {
         Comment comment = commentRepository.findWithMemberById(id).orElseThrow(CommentNotFoundException::new);
-        authChecker.authorityCheck(comment.getMember().getId());
+        authUtils.authorityCheck(comment.getMember().getId());
         //  commentRepository.delete()를 사용하여 삭제가능한 최상위 댓글을 삭제 -> CASCADE 설정으로 하위댓글이 일괄삭제됨.
         comment.delete().ifPresent(commentRepository::delete);
     }
 
     private Comment buildCommentFromRequest(CommentCreateRequest req) {
-        Member member = memberRepository.findById(authChecker.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(authUtils.getMemberId()).orElseThrow(MemberNotFoundException::new);
         Post post = postRepository.findById(req.getPostId()).orElseThrow(PostNotFoundException::new);
         Comment parent = req.getParentId() != null
                 ? commentRepository.findById(req.getParentId()).orElseThrow(CommentNotFoundException::new)
