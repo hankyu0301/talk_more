@@ -5,12 +5,14 @@ import hankyu.board.spring_board.domain.category.repository.CategoryRepository;
 import hankyu.board.spring_board.domain.member.entity.Member;
 import hankyu.board.spring_board.domain.member.repository.MemberRepository;
 import hankyu.board.spring_board.domain.post.dto.*;
+import hankyu.board.spring_board.domain.post.entity.Image;
 import hankyu.board.spring_board.domain.post.entity.Post;
 import hankyu.board.spring_board.domain.post.repository.PostRepository;
-import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.auth.utils.AuthUtils;
 import hankyu.board.spring_board.global.exception.category.CategoryNotFoundException;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
+import hankyu.board.spring_board.global.file.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 
 
 @Service
@@ -28,8 +33,8 @@ public class PostService {
     private final PostRepository postRepository;
     private final MemberRepository memberRepository;
     private final CategoryRepository categoryRepository;
-    private final ImageService imageService;
-    private final AuthChecker authChecker;
+    private final FileService fileService;
+    private final AuthUtils authUtils;
 
     /*  QueryDSL로 작성한 메서드*/
     @Transactional(readOnly = true)
@@ -41,58 +46,44 @@ public class PostService {
 
     @Transactional
     public PostCreateResponse create(PostCreateRequest req) {
-        Member member = memberRepository.findById(authChecker.getMemberId()).orElseThrow(MemberNotFoundException::new);
+        Member member = memberRepository.findById(authUtils.getMemberId()).orElseThrow(MemberNotFoundException::new);
         Category category = categoryRepository.findById(req.getCategoryId()).orElseThrow(CategoryNotFoundException::new);
-        //Image Entity의 저장 및 실제 파일 업로드
-        Post post = postRepository.save(new Post(req.getTitle(), req.getContent(), member, category));
-        createAndSaveImage(req.getImages(), post);
+        List<Image> images = req.getImages().stream().map(i -> new Image(i.getOriginalFilename())).collect(toList());
+
+        Post post = postRepository.save(
+                new Post(req.getTitle(), req.getContent(), member, category, images)
+        );
+        uploadImages(post.getImages(), req.getImages());
         return new PostCreateResponse(post.getId());
     }
 
-    @Transactional(readOnly = true)
     public PostDto read(Long id) {
-        Post post = postRepository.findByIdWithMemberAndImages(id).orElseThrow(PostNotFoundException::new);
-        return PostDto.toDto(post);
+        return PostDto.toDto(postRepository.findById(id).orElseThrow(PostNotFoundException::new));
     }
 
     @Transactional
     public void delete(Long id) {
-        Post post = postRepository.findByIdWithMemberAndImages(id).orElseThrow(PostNotFoundException::new);
-        authChecker.authorityCheck(post.getMember().getId());
-        imageService.deleteAll(post.getImages());
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        authUtils.authorityCheck(post.getMember().getId());
+        deleteImages(post.getImages());
         postRepository.delete(post);
     }
 
-
     @Transactional
-    public PostUpdateResponse update(Long id, PostUpdateRequest postUpdateRequest) {
-        Post post = postRepository.findByIdWithMemberAndImages(id).orElseThrow(PostNotFoundException::new);
-        authChecker.authorityCheck(post.getMember().getId());
-        updateImages(postUpdateRequest.getAddedImages(), post, postUpdateRequest.getDeletedImageIds());
-        post.update(postUpdateRequest);
+    public PostUpdateResponse update(Long id, PostUpdateRequest req) {
+        Post post = postRepository.findById(id).orElseThrow(PostNotFoundException::new);
+        authUtils.authorityCheck(post.getMember().getId());
+        Post.ImageUpdatedResult result = post.update(req);
+        uploadImages(result.getAddedImages(), result.getAddedImageFiles());
+        deleteImages(result.getDeletedImages());
         return new PostUpdateResponse(id);
     }
 
-    /*  전달받은 이미지 수정요청을 처리 */
-    private void updateImages(List<MultipartFile> addedImages, Post post, List<Long> deletedImageIds) {
-        //  이미지 업로드
-        uploadImages(addedImages, post);
-        deleteImages(deletedImageIds);
+    private void uploadImages(List<Image> images, List<MultipartFile> fileImages) {
+        IntStream.range(0, images.size()).forEach(i -> fileService.upload(fileImages.get(i), images.get(i).getUniqueName()));
     }
 
-    private void createAndSaveImage(List<MultipartFile> images, Post post) {
-        images.forEach(i -> imageService.create(i, post));
+    private void deleteImages(List<Image> images) {
+        images.stream().forEach(i -> fileService.delete(i.getUniqueName()));
     }
-
-    /*  업로드 할 사진파일을 imageService.create(MultipartFile file)에서 이미지 엔티티 저장, 파일을 저장*/
-    private void uploadImages(List<MultipartFile> fileImages, Post post) {
-        fileImages.forEach(i -> imageService.create(i, post));
-    }
-
-    /*  삭제할 image를 imageService.delete(Long id)에서 이미지 엔티티 삭제, 파일 삭제*/
-    private void deleteImages(List<Long> imageIds) {
-        imageIds.forEach(imageService::delete);
-    }
-
-
 }

@@ -9,12 +9,12 @@ import hankyu.board.spring_board.domain.post.dto.PostUpdateRequest;
 import hankyu.board.spring_board.domain.post.entity.Image;
 import hankyu.board.spring_board.domain.post.entity.Post;
 import hankyu.board.spring_board.domain.post.repository.PostRepository;
-import hankyu.board.spring_board.domain.post.service.ImageService;
 import hankyu.board.spring_board.domain.post.service.PostService;
-import hankyu.board.spring_board.global.auth.AuthChecker;
+import hankyu.board.spring_board.global.auth.utils.AuthUtils;
 import hankyu.board.spring_board.global.exception.category.CategoryNotFoundException;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
+import hankyu.board.spring_board.global.file.FileService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,7 +41,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
@@ -57,15 +56,15 @@ class PostServiceTest {
     @Mock
     CategoryRepository categoryRepository;
     @Mock
-    ImageService imageService;
+    FileService fileService;
     @Mock
-    AuthChecker authChecker;
+    AuthUtils authUtils;
 
     @Test
     void create_Success() {
         //given
         PostCreateRequest req = createPostCreateRequest();
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(categoryRepository.findById(anyLong())).willReturn(Optional.of(createCategory()));
         given(postRepository.save(any())).willReturn(createPost());
@@ -75,13 +74,12 @@ class PostServiceTest {
 
         //then
         verify(postRepository).save(any());
-        verify(imageService, times(req.getImages().size())).create(any(), any());
     }
 
     @Test
     void create_memberNotFound_ThrowsException() {
         //given
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when,then
@@ -91,7 +89,7 @@ class PostServiceTest {
     @Test
     void create_categoryNotFound_ThrowsException() {
         //given
-        given(authChecker.getMemberId()).willReturn(1L);
+        given(authUtils.getMemberId()).willReturn(1L);
         given(memberRepository.findById(anyLong())).willReturn(Optional.of(createMember()));
         given(categoryRepository.findById(anyLong())).willReturn(Optional.empty());
 
@@ -103,7 +101,7 @@ class PostServiceTest {
     void read_Success() {
         // given
         Post post = createPostWithImages();
-        given(postRepository.findByIdWithMemberAndImages(1L)).willReturn(Optional.of(post));
+        given(postRepository.findById(1L)).willReturn(Optional.of(post));
 
 
         // when
@@ -117,7 +115,7 @@ class PostServiceTest {
     @Test
     void read_postNotFound_ThrowsException() {
         //given
-        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.empty());
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         //when,then
         assertThatThrownBy(() -> postService.read(1L)).isInstanceOf(PostNotFoundException.class);
@@ -126,8 +124,8 @@ class PostServiceTest {
     @Test
     void update_Success() {
         // given
-        Post post = createPostWithImages();
-        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.of(post));
+        Post post = createPost();
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
         MockMultipartFile dFile = new MockMultipartFile("d", "d.png", MediaType.IMAGE_PNG_VALUE, "d".getBytes());
         PostUpdateRequest postUpdateRequest = createPostUpdateRequest("title", "content", List.of(dFile),List.of(0L));
 
@@ -137,16 +135,13 @@ class PostServiceTest {
         // then
         List<Image> images = post.getImages();
         List<String> originNames = images.stream().map(Image::getOriginName).collect(toList());
-        assertThat(originNames.size()).isEqualTo(3);
-
-        verify(imageService, times(1)).create(any(), any());
-        verify(imageService, times(1)).delete(any());
+        assertThat(originNames.size()).isEqualTo(1);
     }
 
     @Test
     void update_postNotFound_ThrowsException() {
 
-        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.empty());
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         assertThatThrownBy( () -> postService.update(
                 1L,
@@ -158,20 +153,19 @@ class PostServiceTest {
     void delete_Success() {
         // given
         Post post = createPostWithImages();
-        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.of(post));
+        given(postRepository.findById(anyLong())).willReturn(Optional.of(post));
 
         // when
         postService.delete(1L);
 
         // then
-        verify(imageService).deleteAll(any());
         verify(postRepository).delete(any());
     }
 
     @Test
     void delete_postNotFound_ThrowsException() {
         // given
-        given(postRepository.findByIdWithMemberAndImages(anyLong())).willReturn(Optional.empty());
+        given(postRepository.findById(anyLong())).willReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> postService.delete(1L)).isInstanceOf(PostNotFoundException.class);
