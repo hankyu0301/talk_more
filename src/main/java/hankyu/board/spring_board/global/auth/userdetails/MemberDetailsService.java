@@ -2,7 +2,7 @@ package hankyu.board.spring_board.global.auth.userdetails;
 
 import hankyu.board.spring_board.domain.member.entity.Member;
 import hankyu.board.spring_board.domain.member.repository.MemberRepository;
-import hankyu.board.spring_board.global.exception.member.LoginFailureException;
+import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,7 +20,7 @@ public class MemberDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return memberRepository.findByEmail(email)
                 .map(this::createUserDetails)
-                .orElseThrow(LoginFailureException::new);
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     // DB 에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴

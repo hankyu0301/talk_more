@@ -1,6 +1,5 @@
 package hankyu.board.spring_board.global.auth.utils;
 
-import hankyu.board.spring_board.domain.member.entity.MemberRole;
 import hankyu.board.spring_board.global.exception.common.UnauthorizedAccessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -14,22 +13,23 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class AuthUtils {
-    private final MemberRole ROLE_ADMIN = MemberRole.ROLE_ADMIN;
+    private final String ROLE_ADMIN = "ROLE_ADMIN";
 
     public void authorityCheck(Long memberId) {
         if (hasRole() || (memberId.equals(getMemberId()))) {
 
-        } else throw new UnauthorizedAccessException();
+        }   else {
+            throw new UnauthorizedAccessException();
+        }
     }
 
     private boolean hasRole() {
-        return getMemberRoles().stream().anyMatch(memberRole -> memberRole == ROLE_ADMIN);
+        return getMemberRoles().contains(ROLE_ADMIN);
     }
 
-    private List<MemberRole> getMemberRoles() {
+    private List<String> getMemberRoles() {
         return getAuthentication().getAuthorities().stream()
                 .map(GrantedAuthority::toString)
-                .map(MemberRole::valueOf)
                 .collect(Collectors.toList());
     }
 

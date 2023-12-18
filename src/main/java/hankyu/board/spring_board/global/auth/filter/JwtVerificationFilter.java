@@ -61,9 +61,9 @@ public class JwtVerificationFilter extends OncePerRequestFilter {
                 AuthenticationError.setErrorResponse(HttpStatus.UNAUTHORIZED, 401, "리프레쉬 토큰을 찾을 수 없습니다.", response);
             } catch (ExpiredJwtException je) {
                 /*  리프레쉬 토큰이 만료된 경우 진입*/
-                log.error("### 리프레쉬 토큰을 찾을 수 없음");
+                log.error("### 리프레쉬 토큰이 만료됐습니다.");
                 jwtTokenizer.resetHeaderRefreshToken(response);
-                AuthenticationError.setErrorResponse(HttpStatus.UNAUTHORIZED, 401, "만료된 Refresh 토큰입니다.", response);
+                AuthenticationError.setErrorResponse(HttpStatus.UNAUTHORIZED, 401, "만료된 리프레쉬 토큰입니다.", response);
             }
         } catch (MalformedJwtException mje) {
             log.error("### 올바르지 않은 토큰 형식입니다.");

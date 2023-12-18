@@ -13,13 +13,13 @@ import java.time.Duration;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    @Value("${upload.image.location}")
-    private String location;
+    @Value("${stored.image.location}")
+    private String storedLocation;
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
-                .addResourceLocations(location)
+                .addResourceLocations(storedLocation)
                 .setCacheControl(CacheControl.maxAge(Duration.ofHours(1L)).cachePublic());
     }
 }

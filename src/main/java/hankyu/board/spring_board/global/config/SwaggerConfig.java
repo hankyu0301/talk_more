@@ -5,14 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
-import springfox.documentation.service.AuthorizationScope;
-import springfox.documentation.service.SecurityReference;
+import springfox.documentation.service.*;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Configuration
@@ -26,22 +24,23 @@ public class SwaggerConfig {
                 .apis(RequestHandlerSelectors.basePackage("hankyu.board.spring_board.domain"))
                 .paths(PathSelectors.any())
                 .build()
-                .securitySchemes(List.of(apiKey()))
+                .securitySchemes(apiKey())
                 .securityContexts(List.of(securityContext()));
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Board")
-                .description("Simple Board REST API Documentation")
+                .description("Talk_More REST API Documentation </br> admin : Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IlJPTEVfQURNSU4iLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm1lbWJlcklkIjoiMSIsInN1YiI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTcwMjg2NDM2NiwiZXhwIjo1NTAzMDgwMzY2fQ.ApZDA_4viIy9bWr8zw6WxkBM4eov6sQHgFOD2jKNBrE")
                 .license("finebears@naver.com")
                 .licenseUrl("https://github.com/hankyu0301/spring_board")
                 .version("1.0")
                 .build();
     }
-
-    private static ApiKey apiKey() {
-        return new ApiKey("Authorization", "Bearer Token", "header");
+    private static List<SecurityScheme> apiKey() {
+        List<SecurityScheme> apiKeyList = new ArrayList<>();
+        apiKeyList.add(new ApiKey("Access", "Bearer Token", "header"));
+        return apiKeyList;
     }
 
     private SecurityContext securityContext() {

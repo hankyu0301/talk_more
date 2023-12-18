@@ -13,6 +13,7 @@ import hankyu.board.spring_board.global.exception.member.DuplicateEmailException
 import hankyu.board.spring_board.global.exception.member.DuplicateNicknameException;
 import hankyu.board.spring_board.global.exception.member.LoginFailureException;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
+import hankyu.board.spring_board.global.exception.message.MessageNotFoundException;
 import hankyu.board.spring_board.global.exception.post.ImageNotFoundException;
 import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
 import hankyu.board.spring_board.global.exception.post.UnsupportedImageFormatException;
@@ -36,7 +37,7 @@ public class ExceptionControllerAdvice {
     public Response exception(Exception e) {
         log.error("e = {}", e.getMessage());
         log.error("Exception occurred: {}", e.getClass().getSimpleName());
-        return Response.failure(500, e.getMessage());
+        return Response.failure(500, "알 수 없는 에러가 발생했습니다.");
     }
 
     // 500 응답
@@ -170,6 +171,15 @@ public class ExceptionControllerAdvice {
     public Response postNotFoundException() {
         return Response.failure(404, "요청한 이미지를 찾을 수 없습니다.");
     }
+
+    // 404 응답
+    // 요청한 게시글을 찾을 수 없음
+    @ExceptionHandler(MessageNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response messageNotFoundException() {
+        return Response.failure(404, "요청한 메세지를 찾을 수 없습니다.");
+    }
+
 
     // 404 응답
     // 요청한 카테고리를 찾을 수 없음
