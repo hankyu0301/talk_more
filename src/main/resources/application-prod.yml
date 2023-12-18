@@ -23,6 +23,7 @@ spring:
       host: ${REDIS_HOST}
       port: ${REDIS_PORT}
 
+
 cloud:
   aws:
     credentials:
