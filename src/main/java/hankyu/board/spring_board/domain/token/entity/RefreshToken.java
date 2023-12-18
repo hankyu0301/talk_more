@@ -2,10 +2,10 @@ package hankyu.board.spring_board.domain.token.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.index.Indexed;
 
-import javax.persistence.Id;
 
 @AllArgsConstructor
 @Getter
