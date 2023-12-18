@@ -46,7 +46,7 @@ class EmailControllerTest {
         //given
         EmailConfirmRequest req = createEmailAuthRequest();
 
-        mockMvc.perform(get("/api/confirm-email?email={email}&code={code}", req.getEmail(), req.getCode()))
+        mockMvc.perform(get("/api/email?email={email}&code={code}", req.getEmail(), req.getCode()))
                 .andExpect(status().isOk());
 
         verify(emailService, times(1)).confirmEmail(req);
@@ -57,7 +57,7 @@ class EmailControllerTest {
         //given
         ResendEmailRequest req = createResendEmailRequest();
 
-        mockMvc.perform(post("/api/resend-email")
+        mockMvc.perform(post("/api/email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isOk());
