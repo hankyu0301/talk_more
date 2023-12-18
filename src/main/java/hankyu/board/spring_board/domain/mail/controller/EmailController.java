@@ -23,7 +23,7 @@ public class EmailController {
     private final EmailService emailService;
 
     @ApiOperation(value = "이메일 인증", notes = "이메일 인증을 한다.")
-    @GetMapping("/api/confirm-email")
+    @GetMapping("/api/email")
     @ResponseStatus(HttpStatus.OK)
     public Response confirmEmail(@ModelAttribute EmailConfirmRequest req) {
         emailService.confirmEmail(req);
@@ -31,7 +31,7 @@ public class EmailController {
     }
 
     @ApiOperation(value = "인증 메일 재발송", notes = "인증 메일을 재발송 한다.")
-    @PostMapping("/api/resend-email")
+    @PostMapping("/api/email")
     @ResponseStatus(HttpStatus.OK)
     public Response resendEmail(@Valid @RequestBody ResendEmailRequest req) {
         emailService.resend(req);

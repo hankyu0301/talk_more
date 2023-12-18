@@ -37,7 +37,7 @@ public class EmailService {
         smm.setTo(email);
         smm.setFrom("finebears@naver.com");
         smm.setSubject("회원가입 이메일 인증");
-        smm.setText("http://" + address + ":8080/api/confirm-email?email="+email+"&code="+authCode);
+        smm.setText("http://" + address + ":8080/api/email?email="+email+"&code="+authCode);
         authMailCodeService.saveOrUpdateAuthCode(authCode, email);
         javaMailSender.send(smm);
     }
