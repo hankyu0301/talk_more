@@ -2,6 +2,10 @@ upload:
   image:
     location: /Users/hankyujang/Desktop/springboot-janghankyu/remind/upload/
 
+stored:
+  image:
+    location: file:/Users/hankyujang/Desktop/springboot-janghankyu/remind/upload/
+
 spring:
   datasource:
     url: jdbc:h2:mem:test

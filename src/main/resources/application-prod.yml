@@ -1,6 +1,6 @@
-upload:
+stored:
   image:
-    location: https://finebears-board-bucket.s3.ap-northeast-2.amazonaws.com/images/
+    location: ${S3_ADDRESS}
 
 spring:
   datasource:
