@@ -11,7 +11,6 @@ import hankyu.board.spring_board.global.exception.mail.AuthMailCodeNotFoundExcep
 import hankyu.board.spring_board.global.exception.mail.EmailAlreadyVerifiedException;
 import hankyu.board.spring_board.global.exception.member.DuplicateEmailException;
 import hankyu.board.spring_board.global.exception.member.DuplicateNicknameException;
-import hankyu.board.spring_board.global.exception.member.LoginFailureException;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.global.exception.message.MessageNotFoundException;
 import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
@@ -74,13 +73,6 @@ public class ExceptionControllerAdvice {
         return Response.failure(400, "유효하지 않은 인증코드 입니다.");
     }
 
-    // 401 응답
-    // 아이디 혹은 비밀번호 오류시 발생
-    @ExceptionHandler(LoginFailureException.class)
-    @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public Response loginFailureException() {
-        return Response.failure(401, "로그인에 실패하였습니다.");
-    }
 /*
     // 401 에러
     @ExceptionHandler(TokenInvalidSecretKeyException.class)
@@ -160,11 +152,11 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(PostNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response postNotFoundException() {
-        return Response.failure(404, "요청한 이미지를 찾을 수 없습니다.");
+        return Response.failure(404, "요청한 게시글 찾을 수 없습니다.");
     }
 
     // 404 응답
-    // 요청한 게시글을 찾을 수 없음
+    // 요청한 메세지를 찾을 수 없음
     @ExceptionHandler(MessageNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response messageNotFoundException() {
@@ -173,7 +165,7 @@ public class ExceptionControllerAdvice {
 
 
     // 404 응답
-    // 요청한 카테고리를 찾을 수 없음
+    // 요청한 인증 코드를 찾을 수 없음
     @ExceptionHandler(AuthMailCodeNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response authMailCodeNotFoundException() {
@@ -181,7 +173,7 @@ public class ExceptionControllerAdvice {
     }
 
     // 404 응답
-    // 요청한 카테고리를 찾을 수 없음
+    // 요청한 토큰을 찾을 수 없음
     @ExceptionHandler(RefreshTokenNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response refreshTokenNotFoundException() {
