@@ -14,7 +14,6 @@ import hankyu.board.spring_board.global.exception.member.DuplicateNicknameExcept
 import hankyu.board.spring_board.global.exception.member.LoginFailureException;
 import hankyu.board.spring_board.global.exception.member.MemberNotFoundException;
 import hankyu.board.spring_board.global.exception.message.MessageNotFoundException;
-import hankyu.board.spring_board.global.exception.post.ImageNotFoundException;
 import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
 import hankyu.board.spring_board.global.exception.post.UnsupportedImageFormatException;
 import hankyu.board.spring_board.global.exception.token.RefreshTokenNotFoundException;
@@ -154,14 +153,6 @@ public class ExceptionControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response memberNotFoundException() {
         return Response.failure(404, "요청한 회원을 찾을 수 없습니다.");
-    }
-
-    // 404 응답
-    // 요청한 이미지를 찾을 수 없음
-    @ExceptionHandler(ImageNotFoundException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Response imageNotFoundException() {
-        return Response.failure(404, "요청한 이미지를 찾을 수 없습니다.");
     }
 
     // 404 응답
