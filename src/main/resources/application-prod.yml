@@ -18,11 +18,9 @@ spring:
         default_batch_fetch_size: 100
         dialect: org.hibernate.dialect.MariaDBDialect
 
-  data:
-    redis:
-      host: ${ELASTICACHE_HOST}
-      port: ${ELASTICACHE_PORT}
-
+  redis:
+    host: ${ELASTICACHE_HOST}
+    port: ${ELASTICACHE_PORT}
 
 cloud:
   aws:
