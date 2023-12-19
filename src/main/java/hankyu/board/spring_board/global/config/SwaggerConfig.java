@@ -31,15 +31,15 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Board")
-                .description("Talk_More REST API Documentation </br> admin : Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IlJPTEVfQURNSU4iLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm1lbWJlcklkIjoiMSIsInN1YiI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTcwMjg2NDM2NiwiZXhwIjo1NTAzMDgwMzY2fQ.ApZDA_4viIy9bWr8zw6WxkBM4eov6sQHgFOD2jKNBrE")
+                .description("Talk_More REST API Documentation </br> admin : Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IlJPTEVfQURNSU4iLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm1lbWJlcklkIjoiMSIsInN1YiI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTcwMjk3NDAwOCwiZXhwIjoxNzYyOTczOTQ4Nn0.cbO1rS1RAqAFDK4Ai9EADgvLlsbTkFiPSeuAXcQKhPE")
                 .license("finebears@naver.com")
-                .licenseUrl("https://github.com/hankyu0301/spring_board")
+                .licenseUrl("https://github.com/hankyu0301/talk_more")
                 .version("1.0")
                 .build();
     }
     private static List<SecurityScheme> apiKey() {
         List<SecurityScheme> apiKeyList = new ArrayList<>();
-        apiKeyList.add(new ApiKey("Access", "Bearer Token", "header"));
+        apiKeyList.add(new ApiKey("Authorization", "Bearer Token", "header"));
         return apiKeyList;
     }
 
