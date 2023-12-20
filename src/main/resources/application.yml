@@ -30,7 +30,7 @@ jwt:
   access-token-expiration-minutes : 180
   refresh-token-expiration-minutes : 4320
 
-
-
+admin:
+  token: eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IlJPTEVfQURNSU4iLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm1lbWJlcklkIjoiMSIsInN1YiI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTcwMzA1MzcyOSwiZXhwIjoxNzAzMDY0NTI5MzR9.t9LPTEYJT-reU7BoHNjVCAsjSvX3kO7PucevsGRNCrc
 
 

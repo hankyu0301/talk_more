@@ -1,5 +1,6 @@
 package hankyu.board.spring_board.global.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -16,6 +17,9 @@ import java.util.List;
 @Configuration
 public class SwaggerConfig {
 
+    @Value("${admin.token}")
+    private String adminToken;
+
     @Bean
     public Docket api() {
         return new Docket(DocumentationType.OAS_30)
@@ -30,8 +34,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("Board")
-                .description("Talk_More REST API Documentation </br> admin : Bearer eyJhbGciOiJIUzI1NiJ9.eyJyb2xlcyI6IlJPTEVfQURNSU4iLCJlbWFpbCI6ImFkbWluQGFkbWluLmNvbSIsIm1lbWJlcklkIjoiMSIsInN1YiI6ImFkbWluQGFkbWluLmNvbSIsImlhdCI6MTcwMjk3NDAwOCwiZXhwIjoxNzYyOTczOTQ4Nn0.cbO1rS1RAqAFDK4Ai9EADgvLlsbTkFiPSeuAXcQKhPE")
+                .title("Talk_more")
+                .description("Talk_More REST API Documentation </br> admin : Bearer " + adminToken)
                 .license("finebears@naver.com")
                 .licenseUrl("https://github.com/hankyu0301/talk_more")
                 .version("1.0")
