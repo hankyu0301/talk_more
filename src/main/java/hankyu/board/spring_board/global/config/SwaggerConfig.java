@@ -13,6 +13,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 @Configuration
 public class SwaggerConfig {
@@ -25,7 +26,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("hankyu.board.spring_board.domain"))
+                .apis(RequestHandlerSelectors.basePackage("hankyu.board.spring_board.domain").and(Predicate.not(RequestHandlerSelectors.basePackage("hankyu.board.spring_board.domain.oauth"))))
                 .paths(PathSelectors.any())
                 .build()
                 .securitySchemes(apiKey())
