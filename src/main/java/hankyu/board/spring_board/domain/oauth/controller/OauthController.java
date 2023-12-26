@@ -10,6 +10,6 @@ public class OauthController {
 
     @GetMapping()
     public String index() {
-        return "/oauth/index";
+        return "oauth/index";
     }
 }
