@@ -15,6 +15,7 @@ import hankyu.board.spring_board.global.exception.member.MemberNotFoundException
 import hankyu.board.spring_board.global.exception.message.MessageNotFoundException;
 import hankyu.board.spring_board.global.exception.post.PostNotFoundException;
 import hankyu.board.spring_board.global.exception.post.UnsupportedImageFormatException;
+import hankyu.board.spring_board.global.exception.token.AccessTokenNotFound;
 import hankyu.board.spring_board.global.exception.token.RefreshTokenNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -153,6 +154,14 @@ public class ExceptionControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Response postNotFoundException() {
         return Response.failure(404, "요청한 게시글 찾을 수 없습니다.");
+    }
+
+    // 404 응답
+    // 요청한 게시글을 찾을 수 없음
+    @ExceptionHandler(AccessTokenNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response accessTokenNotFound() {
+        return Response.failure(404, "요청한 토큰을 찾을 수 없습니다.");
     }
 
     // 404 응답

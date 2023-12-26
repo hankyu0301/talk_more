@@ -1,11 +1,16 @@
 package hankyu.board.spring_board.global.config.security;
 
+import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.domain.oauth.service.KakaoTokenOauthService;
 import hankyu.board.spring_board.global.auth.handler.login.MemberAuthenticationEntryPoint;
 import hankyu.board.spring_board.global.auth.handler.logout.MemberLogoutHandler;
 import hankyu.board.spring_board.global.auth.handler.logout.MemberLogoutSuccessHandler;
+import hankyu.board.spring_board.global.auth.handler.oauth.OAuth2SuccessHandler;
 import hankyu.board.spring_board.global.auth.jwt.DelegateTokenUtil;
 import hankyu.board.spring_board.global.auth.jwt.JwtTokenizer;
+import hankyu.board.spring_board.global.auth.userdetails.CustomOAuth2UserService;
 import hankyu.board.spring_board.global.auth.utils.AccessTokenRenewalUtil;
+import hankyu.board.spring_board.global.auth.utils.OAuth2TokenUtils;
 import hankyu.board.spring_board.global.redis.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -30,9 +35,13 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final JwtTokenizer jwtTokenizer;
+    private final MemberRepository memberRepository;
     private final AccessTokenRenewalUtil accessTokenRenewalUtil;
     private final DelegateTokenUtil delegateTokenUtil;
     private final RedisService redisService;
+    private final CustomOAuth2UserService oAuth2UserService;
+    private final OAuth2TokenUtils oAuth2TokenUtils;
+    private final KakaoTokenOauthService kakaoTokenOauthService;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -43,19 +52,28 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http
+                .headers().frameOptions().disable()
+                .and()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .csrf().disable()
                 .cors(withDefaults())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .logout()
                 .logoutUrl("/api/users/logout")
                 .deleteCookies("Refresh")
                 .addLogoutHandler(new MemberLogoutHandler(redisService, jwtTokenizer))
                 .logoutSuccessHandler(new MemberLogoutSuccessHandler())
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint()
+                        .userService(oAuth2UserService)
+                        .and()
+                        .successHandler(
+                                new OAuth2SuccessHandler(delegateTokenUtil, memberRepository, jwtTokenizer,
+                                        oAuth2TokenUtils, kakaoTokenOauthService)))
 
-                .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new MemberAuthenticationEntryPoint())
 
@@ -91,7 +109,7 @@ public class SecurityConfig {
                 .antMatchers(HttpMethod.POST, "/api/messages").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/messages/sender", "/api/messages/receiver").authenticated()
 
-                .anyRequest().hasAnyRole("ADMIN")
+                .anyRequest().permitAll()
                 .and()
 
                 .apply(jwtSecurityConfig());

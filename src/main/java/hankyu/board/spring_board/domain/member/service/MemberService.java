@@ -4,7 +4,11 @@ import hankyu.board.spring_board.domain.member.dto.MemberCreateRequest;
 import hankyu.board.spring_board.domain.member.dto.MemberDto;
 import hankyu.board.spring_board.domain.member.dto.MemberUpdateRequest;
 import hankyu.board.spring_board.domain.member.entity.Member;
+import hankyu.board.spring_board.domain.member.entity.MemberRole;
 import hankyu.board.spring_board.domain.member.repository.MemberRepository;
+import hankyu.board.spring_board.domain.oauth.entity.KakaoToken;
+import hankyu.board.spring_board.domain.oauth.repository.KakaoTokenRepository;
+import hankyu.board.spring_board.domain.oauth.service.KakaoApiService;
 import hankyu.board.spring_board.global.auth.utils.AuthUtils;
 import hankyu.board.spring_board.global.exception.member.DuplicateEmailException;
 import hankyu.board.spring_board.global.exception.member.DuplicateNicknameException;
@@ -15,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class MemberService {
@@ -22,6 +28,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final AuthUtils authUtils;
     private final PasswordEncoder passwordEncoder;
+    private final KakaoApiService kakaoApiService;
+    private final KakaoTokenRepository kakaoTokenRepository;
     private final ApplicationEventPublisher publisher;
 
     @Transactional
@@ -52,6 +60,10 @@ public class MemberService {
     public void delete(Long id) {
         Member member = memberRepository.findById(id).orElseThrow(MemberNotFoundException::new);
         authUtils.authorityCheck(member.getId());
+        if (member.getMemberRole().equals(MemberRole.ROLE_SOCIAL)) {
+            Optional<KakaoToken> kakaoToken = kakaoTokenRepository.findByMember(member);
+            kakaoToken.ifPresent(token -> kakaoApiService.unlinkKaKaoService(token.getAccessToken()));
+        }
         memberRepository.delete(member);
     }
 
