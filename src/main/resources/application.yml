@@ -25,6 +25,9 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
+  thymeleaf:
+    prefix: classpath:/templates/
+
   security:
     oauth2:
       client:
