@@ -3,8 +3,8 @@ spring:
   mail:
     host: smtp.naver.com
     port: 465
-    username: ${MAIL_USERNAME}
-    password: ${MAIL_PASSWORD}
+    username: finebears@naver.com
+    password: MJ42V41RXFJC
     properties:
       debug: true
       mail:
@@ -33,8 +33,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${KAKAO_CLIENT_ID}
-            client-secret: ${KAKAO_CLIENT_SECRET}
+            client-id: 9ab824124af82392693995be2ddec89a
+            client-secret: rafggbwtttuPLF4p9PabWWXoq2j8thuO
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
             authorization-grant-type: authorization_code
             client-authentication-method: POST
@@ -49,7 +49,7 @@ spring:
             user-name-attribute: id
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: jwtSecretsForSpringBoardFinebears
   access-token-expiration-minutes : 180
   refresh-token-expiration-minutes : 4320
 
