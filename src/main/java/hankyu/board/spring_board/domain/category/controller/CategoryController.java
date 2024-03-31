@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Api(value = "Category Controller", tags = "Category")
+@Api(value = "카테고리 관련 API", tags = "Category")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")

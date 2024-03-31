@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Api(value = "Post Controller", tags = "Post")
+@Api(value = "게시글 관련 API", tags = "Post")
 @RestController
 @RequiredArgsConstructor
 public class PostController {

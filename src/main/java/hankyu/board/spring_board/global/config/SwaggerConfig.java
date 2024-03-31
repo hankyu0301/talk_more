@@ -36,7 +36,11 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Talk_more")
-                .description("Talk_More REST API Documentation </br> admin : Bearer " + adminToken)
+                .description("Talk_More REST API Documentation </br>"
+                        + " </br> "
+                        + "관리자 토큰을 우측 초록색 Authorize 버튼에 넣어주세요 "
+                        + " </br> "
+                        + "Bearer " + adminToken)
                 .license("finebears@naver.com")
                 .licenseUrl("https://github.com/hankyu0301/talk_more")
                 .version("1.0")

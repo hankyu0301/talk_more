@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 import static hankyu.board.spring_board.global.dto.response.Response.success;
 
-@Api(value = "Member Controller", tags = "Member")
+@Api(value = "회원 관련 API", tags = "Member")
 @RestController
 @RequiredArgsConstructor
 public class MemberController {

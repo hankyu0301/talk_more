@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-@Api(value = "Comment Controller", tags = "Comment")
+@Api(value = "댓글 관련 API", tags = "Comment")
 @RestController
 @RequiredArgsConstructor
 public class CommentController {

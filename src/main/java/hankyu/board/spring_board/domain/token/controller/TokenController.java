@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
-@Api(value = "Token Controller", tags = "Token")
+@Api(value = "토큰 관련 API", tags = "Token")
 @RequiredArgsConstructor
 @RestController
 public class TokenController {

@@ -15,7 +15,7 @@ import javax.validation.Valid;
 
 import static hankyu.board.spring_board.global.dto.response.Response.success;
 
-@Api(value = "Email Controller", tags = "Email")
+@Api(value = "이메일 관련 API", tags = "Email")
 @RestController
 @RequiredArgsConstructor
 public class EmailController {
