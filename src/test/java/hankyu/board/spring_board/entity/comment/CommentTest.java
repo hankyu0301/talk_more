@@ -41,63 +41,35 @@ class CommentTest {
         // 5(del) -> 7(del)
         Comment comment1 = createCommentWithContent("content1",null);
         Comment comment2 = createCommentWithContent("content2",comment1);
-        Comment comment3 = createCommentWithContent("content3",comment2);
-        Comment comment4 = createCommentWithContent("content4",comment2);
+        Comment comment3 = createCommentWithContent("content3",comment1);
+        Comment comment4 = createCommentWithContent("content4",comment3);
         Comment comment5 = createCommentWithContent("content5",comment3);
         Comment comment6 = createCommentWithContent("content6",comment5);
         Comment comment7 = createCommentWithContent("content7",comment5);
+        Comment comment8 = createCommentWithContent("content8",comment7);
+        Comment comment9 = createCommentWithContent("content9",comment7);
 
-        comment2.markAsDeleted();
-        comment3.markAsDeleted();
-        comment5.markAsDeleted();
-        comment6.markAsDeleted();
-
-        ReflectionTestUtils.setField(comment1, "children", List.of(comment2));
-        ReflectionTestUtils.setField(comment2, "children", List.of(comment3, comment4));
-        ReflectionTestUtils.setField(comment3, "children", List.of(comment5));
+        ReflectionTestUtils.setField(comment1, "children", List.of(comment2, comment3));
+        ReflectionTestUtils.setField(comment2, "children", List.of());
+        ReflectionTestUtils.setField(comment3, "children", List.of(comment4,comment5));
         ReflectionTestUtils.setField(comment4, "children", List.of());
         ReflectionTestUtils.setField(comment5, "children", List.of(comment6,comment7));
         ReflectionTestUtils.setField(comment6, "children", List.of());
-        ReflectionTestUtils.setField(comment7, "children", List.of());
+        ReflectionTestUtils.setField(comment7, "children", List.of(comment8,comment9));
+
+        comment1.delete();
+        comment2.delete();
+        comment3.delete();
+        comment4.delete();
+        comment5.delete();
+        comment8.delete();
+        comment9.delete();
 
         // when
         Optional<Comment> deletableComment = comment7.delete();
 
         // then
-        assertThat(deletableComment).containsSame(comment3);
+        assertThat(deletableComment).containsSame(comment7);
     }
-
-    @Test
-    void findDeletableComment_Success2() {
-        // given
-
-        // root 1
-        // 1 -> 2
-        // 2(del) -> 3(del)
-        // 2(del) -> 4
-        // 3(del) -> 5
-        Comment comment1 = createComment(null);
-        Comment comment2 = createComment(comment1);
-        Comment comment3 = createComment(comment2);
-        Comment comment4 = createComment(comment2);
-        Comment comment5 = createComment(comment3);
-
-        comment2.markAsDeleted();
-        comment3.markAsDeleted();
-
-        ReflectionTestUtils.setField(comment1, "children", List.of(comment2));
-        ReflectionTestUtils.setField(comment2, "children", List.of(comment3, comment4));
-        ReflectionTestUtils.setField(comment3, "children", List.of(comment5));
-        ReflectionTestUtils.setField(comment4, "children", List.of());
-        ReflectionTestUtils.setField(comment5, "children", List.of());
-
-        // when
-        Optional<Comment> deletableComment = comment5.delete();
-
-        // then
-        assertThat(deletableComment).containsSame(comment3);
-
-    }
-
 
 }

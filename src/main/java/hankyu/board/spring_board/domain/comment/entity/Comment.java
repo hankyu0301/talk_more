@@ -103,11 +103,11 @@ public class Comment extends BaseTimeEntity {
     /*  자신의 자식 레벨만 검사하는 메서드*/
     private boolean isDeletableCommentForParent() {
         for (Comment child : getChildren()) {
-            if (!child.isDeleted()) {
+            if (!child.isDeletableCommentForParent()) {
                 return false;
             }
         }
-        return true;
+        return isDeleted();
     }
 
 }

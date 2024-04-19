@@ -84,11 +84,19 @@ public class InitDB {
         Comment c1 = commentRepository.save(new Comment("content", member, post, null));
         Comment c2 = commentRepository.save(new Comment("content", member, post, c1));
         Comment c3 = commentRepository.save(new Comment("content", member, post, c1));
-        Comment c4 = commentRepository.save(new Comment("content", member, post, c2));
-        Comment c5 = commentRepository.save(new Comment("content", member, post, c2));
-        Comment c6 = commentRepository.save(new Comment("content", member, post, c4));
-        Comment c7 = commentRepository.save(new Comment("content", member, post, c3));
-        Comment c8 = commentRepository.save(new Comment("content", member, post, null));
+        Comment c4 = commentRepository.save(new Comment("content", member, post, c3));
+        Comment c5 = commentRepository.save(new Comment("content", member, post, c3));
+        Comment c6 = commentRepository.save(new Comment("content", member, post, c5));
+        Comment c7 = commentRepository.save(new Comment("content", member, post, c5));
+        Comment c8 = commentRepository.save(new Comment("content", member, post, c6));
+        Comment c9 = commentRepository.save(new Comment("content", member, post, c6));
+        c1.delete();
+        c2.delete();
+        c3.delete();
+        c6.delete();
+        c7.delete();
+        c8.delete();
+        c9.delete();
     }
 
 }
