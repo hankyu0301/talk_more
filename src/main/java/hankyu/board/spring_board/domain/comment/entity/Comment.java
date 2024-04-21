@@ -87,7 +87,7 @@ public class Comment extends BaseTimeEntity {
 
     /*  부모 댓글이 존재하고 부모 댓글의 자식댓글들이 모두 삭제된 상태인지? */
     private boolean isDeletableParent() {
-        return getParent() != null && getParent().isDeleted();
+        return getParent() != null && getParent().isDeleted() && getParent().isDeletableCommentForParent();
     }
 
     /*  마지막 댓글까지 조회하여 현재 댓글이 삭제 가능한 댓글인지 판단*/
@@ -103,7 +103,7 @@ public class Comment extends BaseTimeEntity {
     /*  자신의 자식 레벨만 검사하는 메서드*/
     private boolean isDeletableCommentForParent() {
         for (Comment child : getChildren()) {
-            if (!child.isDeletableCommentForParent()) {
+            if (!child.isDeleted()) {
                 return false;
             }
         }

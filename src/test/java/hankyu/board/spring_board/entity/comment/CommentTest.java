@@ -59,7 +59,6 @@ class CommentTest {
 
         comment1.delete();
         comment2.delete();
-        comment3.delete();
         comment4.delete();
         comment5.delete();
         comment8.delete();
