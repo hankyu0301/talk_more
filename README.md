@@ -8,6 +8,8 @@
 - 개발 인원 : 1명
 - 개발 기간 : 2023.09.12~
 
+📄 [Github Link](https://github.com/hankyu0301/talk_more)
+
 📄 [API 명세](https://www.notion.so/d7225fe2a7304890adc083d624fb1854?pvs=21)
 
 ---
@@ -28,24 +30,89 @@
 
 - Spring Security를 사용한 JWT 로그인을 구현하였습니다.
 - 회원 가입 시 메일을 발송하는 과정을 비동기 이벤트를 생성해 결합도를 줄이도록 구현했습니다.
-    - 메일을 발송하는 로직때문에 회원 가입이 실패되서는 안되기 때문에 트랜잭션이 커밋된 이후, 리스너에서 이벤트를 처리 하도록 TransactionPhase.AFTER_COMMIT 을 사용했습니다.
+    - 메일을 발송하는 로직때문에 회원 가입이 실패되서는 안되기 때문에 트랜잭션이 커밋된 이후 리스너에서 이벤트를 처리 하도록 TransactionPhase.AFTER_COMMIT 을 사용했습니다.
 - Redis를 활용한 로그아웃 기능을 구현했습니다.
-    - 로그아웃 할 때 사용자의 AccessToken을 받아 남은 유효기간만큼 Redis에 저장하여 로그아웃 된 AccessToken의 재사용을 막았습니다.
+    - 로그아웃 시 사용자의 AccessToken을 받아 남은 유효기간만큼 Redis에 저장하여 로그아웃 된 사용자의 AccessToken 재사용을 방지 했습니다.
 - 간단한 사용을 위한 OAuth2 가입을 구현했습니다.
 
 ### 게시글
 
 - 페이징, 검색 조건 설정이 필요한 게시글 목록 조회에는 QueryDSL을 사용하였습니다.
 - 이미지 첨부가 가능합니다. 이미지는 S3에 저장됩니다.
-    - 이미지는 게시글에서만 사용됩니다. 그렇기 때문에 @OneToMany의 cascade, orphanremoval 과 @OnDelete를 사용해 게시글이 저장될때 같이 저장되고, 게시글이 삭제될때 같이 삭제되도록 구현했습니다.
+    - 이미지는 게시글에서만 사용됩니다. 그렇기 때문에 @OneToMany의 cascade, orphanRemoval 과 @OnDelete를 사용해 게시글이 저장될때 같이 저장되고, 게시글이 삭제될때 같이 삭제되도록 구현했습니다.
 
 ### 댓글
 
 - Selft Join을 통한 무한 뎁스의 댓글 구조를 구현했습니다.
-
-### 메시지
-
-- 커서 기반 페이징의 무한 스크롤을 구현했습니다.
+- 댓글 삭제 로직은 다음과 같은 순서로 진행됩니다.
+    1. 삭제 메서드가 호출되면 삭제된 댓글임을 나타내는 deleted 필드를 true로 변경합니다.
+    2. 현재 댓글의 자식 댓글들이 모두 삭제되어야 (deleted = true) 현재 댓글이 실제로 DB에서 삭제 가능한 상태가 되므로 하위 댓글을 검사합니다.
+    3. 하위 댓글이 모두 삭제 가능한 댓글은 상위 댓글이 삭제되었는지 재귀적인 방법으로 확인하며 삭제 가능한 최상위 레벨의 댓글을 반환합니다.
+    4. 최상위 레벨부터 한 뎁스씩 내려오며 자식 댓글이 모두 삭제되어 있는 상태인지 확인합니다.
+    5. 삭제 가능한 최상위 레벨의 댓글을 반환받고 그 댓글을 삭제합니다.
+    6. 하위 댓글은 cascade 설정으로 일괄 삭제됩니다.
+    
+    Comment Entity의 삭제 로직입니다.
+    
+    ```java
+        @Column(nullable = false)
+        private boolean deleted;
+        
+        p//삭제된 댓글임을 마킹해둠
+        public void markAsDeleted() {
+            this.deleted = true;
+        }
+    
+        /*댓글이 삭제가능한 상태인지 확인 후 결과에 따라 다른 값을 return*/
+        public Optional<Comment> delete() {
+            if(deleted) {
+                return Optional.empty();
+            }
+            this.markAsDeleted();
+            /*  현재 댓글의 하위댓글이 모두 삭제된 상태인가?*/
+            if(isDeletableComment()) {
+                return Optional.of(findDeletableAncestorByParent());
+            } return Optional.empty();
+        }
+    
+        /*  삭제조건을 만족하는 최상위 댓글 반환*/
+        private Comment findDeletableAncestorByParent() {
+            /*  부모 댓글이 존재하고 그 댓글이 삭제되었는지?*/
+            if (isDeletableParent()) {
+                /*  부모 댓글에 findDeletableCommentByParent()을 재귀 호출
+                 *  삭제조건을 만족하는 최상위댓글을 반환함 -> 그 댓글을 삭제하면 하위 댓글도 CASCADE 설정으로 일괄 삭제됨*/
+                Comment parent = getParent().findDeletableAncestorByParent();
+                if(parent.isDeletableCommentForParent()) return parent;
+            }
+            return this;
+        }
+    
+        /*  부모 댓글이 존재하고 부모 댓글의 자식댓글들이 모두 삭제된 상태인지? */
+        private boolean isDeletableParent() {
+            return getParent() != null && getParent().isDeleted() && getParent().isDeletableCommentForParent();
+        }
+    
+        /*  마지막 댓글까지 조회하여 현재 댓글이 삭제 가능한 댓글인지 판단*/
+        private boolean isDeletableComment() {
+            for (Comment child : getChildren()) {
+                if (!child.isDeletableComment()) {
+                    return false;
+                }
+            }
+            return isDeleted();
+        }
+    
+        /*  자신의 자식 레벨만 검사하는 메서드*/
+        private boolean isDeletableCommentForParent() {
+            for (Comment child : getChildren()) {
+                if (!child.isDeleted()) {
+                    return false;
+                }
+            }
+            return isDeleted();
+        }
+    ```
+    
 
 ---
 
@@ -53,7 +120,6 @@
 
 - 모든 fetch 전략을 LAZY로 설정하여 해당 로직에 필요한 쿼리만 실행되도록 구현하였습니다.
 - JPA의 지연로딩으로 N+1 문제가 발생하는 부분에 Fetch Join으로 처음부터 필요한 테이블을 함께 가져와서 성능을 최적화 하였습니다.
-- 복잡한 쿼리는 JPQL을 직접 작성해 주었습니다.
 
 ### DevOps
 
@@ -63,7 +129,7 @@
 ### ETC
 
 - API 서버를 구현하고 Swagger를 이용하여 API문서를 생성 하였습니다.
-- BDD의 단위테스트를 약 200여개 작성하여 모든 기능을 테스트했습니다.
+- BDD의 단위테스트를 작성하여 모든 기능을 테스트했습니다.
 - 성공 메시지와 실패 메시지 모두 동일한 DTO에 담아 일관적인 구조로 반환하였습니다.
 - @RestControllerAdvice를 사용하여 예외처리를 관리했습니다.
 
