@@ -4,6 +4,7 @@ import hankyu.board.spring_board.global.dto.response.Response;
 import hankyu.board.spring_board.global.exception.category.CategoryNotFoundException;
 import hankyu.board.spring_board.global.exception.comment.CommentNotFoundException;
 import hankyu.board.spring_board.global.exception.common.CannotConvertNestedStructureException;
+import hankyu.board.spring_board.global.exception.common.JsonParsingException;
 import hankyu.board.spring_board.global.exception.common.UnauthorizedAccessException;
 import hankyu.board.spring_board.global.exception.file.FileUploadFailureException;
 import hankyu.board.spring_board.global.exception.mail.AuthMailCodeMisMatchException;
@@ -37,6 +38,13 @@ public class ExceptionControllerAdvice {
         log.error("e = {}", e.getMessage());
         log.error("Exception occurred: {}", e.getClass().getSimpleName());
         return Response.failure(500, "알 수 없는 에러가 발생했습니다.");
+    }
+
+    // 500 응답
+    @ExceptionHandler(JsonParsingException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Response jsonParsingFailureException() {
+        return Response.failure(500, "Json 파일을 읽을 수 없습니다.");
     }
 
     // 500 응답

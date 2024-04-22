@@ -5,8 +5,8 @@ import hankyu.board.spring_board.domain.member.entity.Member;
 import hankyu.board.spring_board.global.auth.dto.LoginDto;
 import hankyu.board.spring_board.global.auth.jwt.DelegateTokenUtil;
 import hankyu.board.spring_board.global.auth.jwt.JwtTokenizer;
+import hankyu.board.spring_board.global.exception.common.JsonParsingException;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,11 +25,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private final DelegateTokenUtil delegateTokenUtil;
     private final JwtTokenizer jwtTokenizer;
 
-    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
         ObjectMapper objectMapper = new ObjectMapper();
-        LoginDto loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
+        LoginDto loginDto;
+        try {
+            loginDto = objectMapper.readValue(request.getInputStream(), LoginDto.class);
+        } catch (IOException e) {
+            throw new JsonParsingException(e.getMessage());
+        }
         UsernamePasswordAuthenticationToken authenticationToken =
             new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
 
